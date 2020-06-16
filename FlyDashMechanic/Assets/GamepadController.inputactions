@@ -1,0 +1,83 @@
+{
+    "name": "GamepadController",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "152290e5-ee4e-458e-a4fe-5ce6acbd8028",
+            "actions": [
+                {
+                    "name": "MovePlayer",
+                    "id": "2464dc1c-376c-44d1-bb0d-acf5f184d71b",
+                    "expectedControlLayout": "",
+                    "continuous": false,
+                    "passThrough": false,
+                    "initialStateCheck": false,
+                    "processors": "",
+                    "interactions": "",
+                    "bindings": []
+                },
+                {
+                    "name": "MoveCamera",
+                    "id": "636ff9e0-7ff4-45d7-a166-22dcd7ddf7e4",
+                    "expectedControlLayout": "",
+                    "continuous": false,
+                    "passThrough": false,
+                    "initialStateCheck": false,
+                    "processors": "",
+                    "interactions": "",
+                    "bindings": []
+                },
+                {
+                    "name": "FlyDash",
+                    "id": "1a31b095-964f-441a-8c89-e4e4ad0ad60f",
+                    "expectedControlLayout": "",
+                    "continuous": false,
+                    "passThrough": false,
+                    "initialStateCheck": false,
+                    "processors": "",
+                    "interactions": "",
+                    "bindings": []
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6e58dc44-6c75-4416-83e4-42e35dead360",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MovePlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false,
+                    "modifiers": ""
+                },
+                {
+                    "name": "",
+                    "id": "d695833a-fe5c-4cdd-b428-850f0631fca8",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false,
+                    "modifiers": ""
+                },
+                {
+                    "name": "",
+                    "id": "81967ddf-2b93-440e-8bd1-dca8a60d4b59",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FlyDash",
+                    "isComposite": false,
+                    "isPartOfComposite": false,
+                    "modifiers": ""
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

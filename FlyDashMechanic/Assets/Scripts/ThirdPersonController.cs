@@ -18,6 +18,7 @@ public class ThirdPersonController : MonoBehaviour
 
     [Header("Referencia Cinemachine Camara")]
     public Cinemachine.CinemachineFreeLook cinemachineCamera;
+    private float fovStart;
 
     [Header("Comprobaciones fisicas para el personaje")]
     public float gravity = -9.81f;
@@ -29,8 +30,26 @@ public class ThirdPersonController : MonoBehaviour
     [Range(0, 10)] public float rotateSpeed = 5f;
 
     [Header("FlyDash mechanic")]
-    public Transform target;
-    [Range(0.5f,1.5f)] public float flyDuration = 1f;
+    public Transform targetFly;
+    public Transform pivot;
+    public Transform espadaPersonaje;
+    public Material glowMaterial;
+    public ParticleSystem trailPersonaje;
+    private CinemachineImpulseSource impulse;
+    private GameObject clonePlayer;
+    private GameObject cloneEspada;
+    private float flyDuration = 1f;
+    private bool isFlying = false;
+    private bool isDoingAttack = false;
+    private bool couldAttack = false;
+
+    [Space]
+    public Transform enemyPrueba1;
+    [Space]
+    public Transform enemyPrueba2;
+    [Space]
+    public Transform enemyPrueba3;
+
 
 
     //Time.deltatime
@@ -60,8 +79,7 @@ public class ThirdPersonController : MonoBehaviour
     Vector2 moveCamara;
 
 
-    //Para las animaciones y la camara y demas
-    private bool isFlying = false;
+
 
 
 
@@ -93,9 +111,12 @@ public class ThirdPersonController : MonoBehaviour
 
     void Start()
     {
+        impulse = cinemachineCamera.GetComponent<CinemachineImpulseSource>();
         _animator = this.GetComponent<Animator>();
         _cc = this.GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
+        fovStart = cinemachineCamera.m_Lens.FieldOfView;
+        trailPersonaje.Stop();
         DOTween.Init();
     }
 
@@ -106,11 +127,13 @@ public class ThirdPersonController : MonoBehaviour
         MagnitudInput();
         SetGravityGround();
         CamaraGamepad();
-        if (Input.GetMouseButtonDown(0))
+        girarPivot();
+        if (Input.GetMouseButtonDown(0) && !isFlying)
         {
             FlyDashAnim();
         }
         SetCameraFly();
+        FlyDashAttack();
     }
 
     #endregion
@@ -179,7 +202,7 @@ public class ThirdPersonController : MonoBehaviour
     /// </summary>
     public void CamaraGamepad()
     {
-        if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Slash")) { 
+        if (!isFlying) { 
             if (moveCamara.sqrMagnitude > 0.0f)
             {
                 cinemachineCamera.m_XAxis.m_InputAxisValue = moveCamara.x;
@@ -204,9 +227,9 @@ public class ThirdPersonController : MonoBehaviour
         isGrounded = Physics.Raycast(_cc.bounds.min, Vector3.down, 0.1f);
 
 
-        if (isGrounded && velocityGravity.y < 0)
-        {
-            velocityGravity.y = -2f;
+       if (isGrounded && velocityGravity.y < 0)
+       {
+            velocityGravity.y = 0f;
         }
 
         velocityGravity.y += gravity * Time.deltaTime;
@@ -218,39 +241,170 @@ public class ThirdPersonController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Gira el pivote que tiene asignado el player para posteriormente cuando el jugador quiera apuntar con el arma para disparar que apunte en la direccion que esta la camara
+    /// de esta
+    /// </summary>
+    public void girarPivot()
+    {
+        Vector3 eulerAnglesAim = new Vector3(this.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, this.transform.eulerAngles.z);
+        pivot.rotation = Quaternion.Euler(eulerAnglesAim);
+        if (isDoingAttack)
+        {
+            //Apuntamos hacia la direccion que esta mirando la camara, para ello utilizamos el pivot que lleva el personaje
+            Quaternion newRotation = Quaternion.LookRotation(pivot.transform.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, rotateSpeed * 2f * delta);
+        }
+    }
+
 
     #endregion
 
 
     #region FlyDash
 
+
+
     public void FlyDashAnim()
     {
-        _animator.SetTrigger("flyDash");
+        if (isGrounded)
+        {
+            gravity = 0f;
+            //Boolean que controla si hay que girar el personaje a cierto sitio
+            isDoingAttack = true;
+            _animator.SetBool("doingAttack", isDoingAttack);
+            //Activamos la animacion
+            _animator.SetTrigger("flyDash");
+            //El personaje estara en el aire por lo tanto usamos esto para saberlo
+            isFlying = true;
+        }
+
     }
 
     public void DoFlyDash()
     {
-        transform.DOMove(target.position, flyDuration);
-        Invoke("SlowMotionFly", flyDuration);
-        isFlying = true;
+        //Vamos a simular como que el personaje esta subiendo por lo tanto vamos a hacer como unas sombras
+        clonePlayer = Instantiate(gameObject, transform.position, transform.rotation);
+        Destroy(clonePlayer.GetComponent<Animator>());
+        Destroy(clonePlayer.GetComponent<ThirdPersonController>());
+        Destroy(clonePlayer.GetComponent<CharacterController>());
 
+        impulse.GenerateImpulse(Vector3.right);
+
+        SkinnedMeshRenderer[] meshChildren = clonePlayer.GetComponentsInChildren<SkinnedMeshRenderer>();
+        foreach (SkinnedMeshRenderer sk in meshChildren)
+        {
+            sk.material = glowMaterial;
+        }
+
+
+        //Justo cuando salte el animation event borramos al personaje y la espada
+        MostrarMesh(false);
+        //Movemos al personaje hacia el gameobject empty que tiene en la cabeza siempre en una duracion determinada
+        transform.DOMove(targetFly.position, flyDuration).OnComplete(() => StartFlyDashAttack());
+        //Añadimos algun efecto de particulas
+        trailPersonaje.Play();
+
+    }
+
+    public void StartFlyDashAttack()
+    {
+        //Estaremos en el aire ya por lo tanto listos para el ataque por lo tanto hacemos visible al personaje y la espada
+        MostrarMesh(true);
+        //Y ademas ponemos que el personaje pueda atacar
+        couldAttack = true;
+        _animator.speed = 0.0f;
+        trailPersonaje.Stop();
+
+    }
+
+    public void FlyDashAttack()
+    {
+        if(Input.GetMouseButtonDown(0) && couldAttack)
+        {
+            _animator.speed = 0.8f;
+
+            Invoke("LanzarEspadas", 0.15f);
+
+            gravity = -9.81f;
+            isDoingAttack = false;
+            _animator.SetBool("doingAttack", isDoingAttack);
+            Destroy(clonePlayer.gameObject);
+            couldAttack = false;
+            Invoke("EndFlyDashAttack", 1.1f);
+            isFlying = false;
+        }
+    }
+
+    public void LanzarEspadas()
+    {
+
+        cloneEspada = Instantiate(espadaPersonaje.gameObject, espadaPersonaje.transform.position, espadaPersonaje.transform.rotation);
+        TrailRenderer trailEspada = cloneEspada.GetComponentInChildren<TrailRenderer>();
+        MeshRenderer meshEspada = cloneEspada.GetComponent<MeshRenderer>();
+        meshEspada.material = glowMaterial;
+        trailEspada.emitting = true;
+        cloneEspada.transform.parent = null;
+        cloneEspada.transform.DOMove(enemyPrueba1.position, flyDuration / 3f).SetEase(Ease.InExpo);
+        cloneEspada.transform.DORotate(new Vector3(0f, 270f, -130f), 0.3f);
+
+
+
+        cloneEspada = Instantiate(espadaPersonaje.gameObject, espadaPersonaje.transform.position, espadaPersonaje.transform.rotation);
+        trailEspada = cloneEspada.GetComponentInChildren<TrailRenderer>();
+        meshEspada = cloneEspada.GetComponent<MeshRenderer>();
+        meshEspada.material = glowMaterial;
+        trailEspada.emitting = true;
+        cloneEspada.transform.parent = null;
+        cloneEspada.transform.DOMove(enemyPrueba2.position, flyDuration / 3f).SetEase(Ease.InExpo);
+        cloneEspada.transform.DORotate(new Vector3(0f, 270f, -130f), 0.3f);
+
+
+        cloneEspada = Instantiate(espadaPersonaje.gameObject, espadaPersonaje.transform.position, espadaPersonaje.transform.rotation);
+        trailEspada = cloneEspada.GetComponentInChildren<TrailRenderer>();
+        meshEspada = cloneEspada.GetComponent<MeshRenderer>();
+        meshEspada.material = glowMaterial;
+        trailEspada.emitting = true;
+        cloneEspada.transform.parent = null;
+        cloneEspada.transform.DOMove(enemyPrueba3.position, flyDuration / 3f).SetEase(Ease.InExpo);
+        cloneEspada.transform.DORotate(new Vector3(0f, 270f, -130f), 0.3f);
+
+    }
+
+
+    public void EndFlyDashAttack()
+    {
+        impulse.GenerateImpulse(Vector3.right);
+        trailPersonaje.Stop();
     }
 
     public void SetCameraFly()
     {
         if (isFlying)
         {
-            cinemachineCamera.m_Lens.FieldOfView = Mathf.Lerp(cinemachineCamera.m_Lens.FieldOfView, 50f, delta *2f);
-            cinemachineCamera.m_YAxis.Value = Mathf.Lerp(cinemachineCamera.m_YAxis.Value, 0.75f, delta * delta *2f);
-            cinemachineCamera.m_XAxis.Value = Mathf.Lerp(cinemachineCamera.m_XAxis.Value, 0f, delta *2f);
+            cinemachineCamera.m_Lens.FieldOfView = Mathf.Lerp(cinemachineCamera.m_Lens.FieldOfView, 70f, delta / 1f);
+            cinemachineCamera.m_YAxis.Value = Mathf.Lerp(cinemachineCamera.m_YAxis.Value, 0.75f, delta / 0.5f);
+        }
+        else
+        {
+            cinemachineCamera.m_Lens.FieldOfView = Mathf.Lerp(cinemachineCamera.m_Lens.FieldOfView, fovStart, delta / 0.1f);
         }
     }
 
-    public void SlowMotionFly()
+
+
+    public void MostrarMesh(bool estado)
     {
-        Time.timeScale = 1f;
-        _animator.speed = 0.05f;
+        SkinnedMeshRenderer[] meshChildren = GetComponentsInChildren<SkinnedMeshRenderer>();
+        MeshRenderer[] meshEspada = GetComponentsInChildren<MeshRenderer>();
+        foreach(SkinnedMeshRenderer sk in meshChildren)
+        {
+            sk.enabled = estado;
+        }
+        foreach (MeshRenderer es in meshEspada)
+        {
+            es.enabled = estado;
+        }
     }
 
     #endregion

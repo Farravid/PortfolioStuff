@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 using DG.Tweening;
+using UnityEngine.UI;
+using System;
+using UnityEngine.Rendering.Universal.Internal;
 
 public class ThirdPersonController : MonoBehaviour
 {
@@ -35,6 +38,11 @@ public class ThirdPersonController : MonoBehaviour
     public Transform espadaPersonaje;
     public Material glowMaterial;
     public ParticleSystem trailPersonaje;
+    private ParticleSystem estelaEspada;
+    [Space]
+    public List<Transform> targets = new List<Transform>();
+    private Transform targetLanzar;
+    private Transform targetProximo = null;
     private CinemachineImpulseSource impulse;
     private GameObject clonePlayer;
     private GameObject cloneEspada;
@@ -42,13 +50,20 @@ public class ThirdPersonController : MonoBehaviour
     private bool isFlying = false;
     private bool isDoingAttack = false;
     private bool couldAttack = false;
+    private bool soltarEspadaGamepad = false;
+    private bool cancelarLanzamiento = false;
+    private float prevXcam;
 
-    [Space]
-    public Transform enemyPrueba1;
-    [Space]
-    public Transform enemyPrueba2;
-    [Space]
-    public Transform enemyPrueba3;
+    [Header("Canvas FlyDash")]
+    public Image apuntar;
+    public Image fijar;
+    public Vector2 uiSeparacion;
+
+    [Header("PostProcess Volume")]
+    public UnityEngine.Rendering.VolumeProfile volumenPostProcess;
+    private UnityEngine.Rendering.Universal.Vignette vignette;
+
+
 
 
 
@@ -95,7 +110,13 @@ public class ThirdPersonController : MonoBehaviour
         controls.Gameplay.MovePlayer.canceled += ctx => movePlayer = Vector2.zero;
         controls.Gameplay.MoveCamera.performed += ctx => moveCamara = ctx.ReadValue<Vector2>();
         controls.Gameplay.MoveCamera.canceled += ctx => moveCamara = Vector2.zero;
-        controls.Gameplay.FlyDash.performed += ctx => FlyDashAnim();
+
+        controls.Gameplay.FlyDash.performed += ctx => {
+            if (!isFlying)
+                FlyDashAnim();
+            else
+                soltarEspadaGamepad = true;
+                };
 
     }
 
@@ -111,6 +132,7 @@ public class ThirdPersonController : MonoBehaviour
 
     void Start()
     {
+        //Time.timeScale = 0.2f;
         impulse = cinemachineCamera.GetComponent<CinemachineImpulseSource>();
         _animator = this.GetComponent<Animator>();
         _cc = this.GetComponent<CharacterController>();
@@ -118,6 +140,8 @@ public class ThirdPersonController : MonoBehaviour
         fovStart = cinemachineCamera.m_Lens.FieldOfView;
         trailPersonaje.Stop();
         DOTween.Init();
+        //apuntar.color = Color.clear;
+
     }
 
 
@@ -127,13 +151,19 @@ public class ThirdPersonController : MonoBehaviour
         MagnitudInput();
         SetGravityGround();
         CamaraGamepad();
+        if (targets.Count < 1)
+            return;
         girarPivot();
         if (Input.GetMouseButtonDown(0) && !isFlying)
         {
             FlyDashAnim();
         }
+        if (!isFlying)
+            targetLanzar = targets[targetIndex()];
         SetCameraFly();
         FlyDashAttack();
+        targetIndex();
+        HudSetUp();
     }
 
     #endregion
@@ -263,8 +293,6 @@ public class ThirdPersonController : MonoBehaviour
 
     #region FlyDash
 
-
-
     public void FlyDashAnim()
     {
         if (isGrounded)
@@ -277,6 +305,8 @@ public class ThirdPersonController : MonoBehaviour
             _animator.SetTrigger("flyDash");
             //El personaje estara en el aire por lo tanto usamos esto para saberlo
             isFlying = true;
+            //Recogemos en una variable el ultimo valor del x axis en cinemachine
+            prevXcam = cinemachineCamera.m_XAxis.Value;
         }
 
     }
@@ -313,14 +343,28 @@ public class ThirdPersonController : MonoBehaviour
         MostrarMesh(true);
         //Y ademas ponemos que el personaje pueda atacar
         couldAttack = true;
-        _animator.speed = 0.0f;
+        _animator.speed = 0.01f;
         trailPersonaje.Stop();
 
+        //Postprocessado
+        if(volumenPostProcess.TryGet(out vignette))
+        {
+            vignette.active = true;
+        }
+
+        apuntar.transform.DORotate(Vector3.forward * 90, .15f, RotateMode.LocalAxisAdd);
+        fijar.DOFade(1f, 0.15f);
+
+    }
+
+    public void SetCancelarLanzamiento()
+    {
+        cancelarLanzamiento = true;
     }
 
     public void FlyDashAttack()
     {
-        if(Input.GetMouseButtonDown(0) && couldAttack)
+        if((Input.GetMouseButtonDown(0) || soltarEspadaGamepad)  && couldAttack)
         {
             _animator.speed = 0.8f;
 
@@ -332,66 +376,140 @@ public class ThirdPersonController : MonoBehaviour
             Destroy(clonePlayer.gameObject);
             couldAttack = false;
             Invoke("EndFlyDashAttack", 1.1f);
-            isFlying = false;
+            fijar.DOFade(0f, 0.15f);
+            //Postprocessado
+            if (volumenPostProcess.TryGet(out vignette))
+            {
+                vignette.active = false;
+            }
+            soltarEspadaGamepad = false;
+        }else if (cancelarLanzamiento)
+        {
+            _animator.speed = 0.8f;
+            gravity = -9.81f;
+            isDoingAttack = false;
+            _animator.SetBool("doingAttack", isDoingAttack);
+            Destroy(clonePlayer.gameObject);
+            couldAttack = false;
+            Invoke("EndFlyDashAttack", 1.1f);
+            //Postprocessado
+            if (volumenPostProcess.TryGet(out vignette))
+            {
+                vignette.active = false;
+            }
+            cancelarLanzamiento = false;
         }
     }
 
+
+
+
     public void LanzarEspadas()
     {
-
         cloneEspada = Instantiate(espadaPersonaje.gameObject, espadaPersonaje.transform.position, espadaPersonaje.transform.rotation);
-        TrailRenderer trailEspada = cloneEspada.GetComponentInChildren<TrailRenderer>();
-        MeshRenderer meshEspada = cloneEspada.GetComponent<MeshRenderer>();
+        estelaEspada = cloneEspada.GetComponentInChildren<ParticleSystem>();
+        MeshRenderer meshEspada = cloneEspada.GetComponentInChildren<MeshRenderer>();
         meshEspada.material = glowMaterial;
-        trailEspada.emitting = true;
         cloneEspada.transform.parent = null;
-        cloneEspada.transform.DOMove(enemyPrueba1.position, flyDuration / 3f).SetEase(Ease.InExpo);
-        cloneEspada.transform.DORotate(new Vector3(0f, 270f, -130f), 0.3f);
+        //Cuando se complete se lanzara a los dos enemigos mas cercanos en un cierto rango si estan
+        cloneEspada.transform.DOMove(targetLanzar.position + new Vector3(0f, 1.2f, 0f), flyDuration / 2f).SetEase(Ease.InExpo).OnComplete(() => ReboteEspada1());
+        estelaEspada.Play();
+
+        cloneEspada.transform.DOLookAt(targetLanzar.position, 0.15f);
+        apuntar.color = Color.clear;
+    }
+
+    public void ReboteEspada1()
+    {
+        estelaEspada.Stop();
+        targetLanzar.parent.gameObject.GetComponent<Animator>().SetTrigger("hit");
+
+        float distanceInicial = Mathf.Infinity;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            //Si el nuevo target no es el target al cual primero le hemos tirado la espada
+            if (targetLanzar != targets[i])
+            {
+
+                float distanceTarget = Vector3.Distance(targetLanzar.position, targets[i].position);
+
+                if(distanceTarget < distanceInicial)
+                {
+                    distanceInicial = distanceTarget;
+                    targetProximo = targets[i];
+                }
+            }
+        }
 
 
-
-        cloneEspada = Instantiate(espadaPersonaje.gameObject, espadaPersonaje.transform.position, espadaPersonaje.transform.rotation);
-        trailEspada = cloneEspada.GetComponentInChildren<TrailRenderer>();
-        meshEspada = cloneEspada.GetComponent<MeshRenderer>();
-        meshEspada.material = glowMaterial;
-        trailEspada.emitting = true;
-        cloneEspada.transform.parent = null;
-        cloneEspada.transform.DOMove(enemyPrueba2.position, flyDuration / 3f).SetEase(Ease.InExpo);
-        cloneEspada.transform.DORotate(new Vector3(0f, 270f, -130f), 0.3f);
-
-
-        cloneEspada = Instantiate(espadaPersonaje.gameObject, espadaPersonaje.transform.position, espadaPersonaje.transform.rotation);
-        trailEspada = cloneEspada.GetComponentInChildren<TrailRenderer>();
-        meshEspada = cloneEspada.GetComponent<MeshRenderer>();
-        meshEspada.material = glowMaterial;
-        trailEspada.emitting = true;
-        cloneEspada.transform.parent = null;
-        cloneEspada.transform.DOMove(enemyPrueba3.position, flyDuration / 3f).SetEase(Ease.InExpo);
-        cloneEspada.transform.DORotate(new Vector3(0f, 270f, -130f), 0.3f);
+        if(targetProximo != null)
+        {
+            cloneEspada.transform.DOMove(targetProximo.position + new Vector3(0f, 1.2f, 0f), flyDuration / 2f).SetEase(Ease.InExpo).OnComplete(() => ReboteEspada2());
+            estelaEspada.Play();
+            cloneEspada.transform.DOLookAt(targetProximo.position, 0.1f);
+        }
+        else
+        {
+            Destroy(cloneEspada, 2f);
+        }
 
     }
 
+    public void ReboteEspada2()
+    {
+        targetProximo.parent.gameObject.GetComponent<Animator>().SetTrigger("hit");
+        estelaEspada.Stop();
+        bool change = false;
+       float distanceInicial = Mathf.Infinity;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (targetProximo != targets[i] && targetLanzar != targets[i])
+            {
+                float distanceTarget = Vector3.Distance(targetProximo.position, targets[i].position);
+                if (distanceTarget < distanceInicial)
+                {
+                    change = true;
+                    distanceInicial = distanceTarget;
+                    targetProximo = targets[i];
+                }
+            }
+        }
+        if (change)
+        {
+            cloneEspada.transform.DOMove((targetProximo.position + new Vector3(0f, 1.2f, 0f)), flyDuration / 2f).SetEase(Ease.InExpo).OnComplete(() => { Destroy(cloneEspada, 2f); targetProximo.parent.gameObject.GetComponent<Animator>().SetTrigger("hit"); });
+            estelaEspada.Play();
+            cloneEspada.transform.DOLookAt(targetProximo.position, 0.1f);
+        }
+        else
+        {
+            Destroy(cloneEspada, 2f);
+        }
+    }
 
     public void EndFlyDashAttack()
     {
         impulse.GenerateImpulse(Vector3.right);
         trailPersonaje.Stop();
+        isFlying = false;
+        apuntar.color = Color.white;
     }
 
     public void SetCameraFly()
     {
         if (isFlying)
         {
-            cinemachineCamera.m_Lens.FieldOfView = Mathf.Lerp(cinemachineCamera.m_Lens.FieldOfView, 70f, delta / 1f);
+            cinemachineCamera.m_Lens.FieldOfView = Mathf.Lerp(cinemachineCamera.m_Lens.FieldOfView, 80f, delta / 1f);
             cinemachineCamera.m_YAxis.Value = Mathf.Lerp(cinemachineCamera.m_YAxis.Value, 0.75f, delta / 0.5f);
+            cinemachineCamera.m_XAxis.m_MaxSpeed = 0f;
         }
         else
         {
             cinemachineCamera.m_Lens.FieldOfView = Mathf.Lerp(cinemachineCamera.m_Lens.FieldOfView, fovStart, delta / 0.1f);
+            cinemachineCamera.m_XAxis.m_MaxSpeed = 300f;
         }
     }
-
-
 
     public void MostrarMesh(bool estado)
     {
@@ -405,6 +523,37 @@ public class ThirdPersonController : MonoBehaviour
         {
             es.enabled = estado;
         }
+    }
+
+    public int targetIndex()
+    {
+        float[] distances = new float[targets.Count];
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            distances[i] = Vector2.Distance(Camera.main.WorldToScreenPoint(targets[i].position), new Vector2(Screen.width / 2, Screen.height / 2));
+        }
+
+        float minDistance = Mathf.Min(distances);
+        int index = 0;
+
+        for (int i = 0; i < distances.Length; i++)
+        {
+            if (minDistance == distances[i])
+                index = i;
+        }
+
+        return index;
+    }
+
+    public void HudSetUp()
+    {
+       apuntar.transform.position = Camera.main.WorldToScreenPoint(targetLanzar.position + (Vector3)uiSeparacion);
+       if (isFlying)
+            return;
+
+       Color c = targets.Count < 1 ? Color.clear : Color.white;
+       apuntar.color = c;
     }
 
     #endregion

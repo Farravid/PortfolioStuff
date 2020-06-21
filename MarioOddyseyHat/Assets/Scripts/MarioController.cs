@@ -27,11 +27,25 @@ public class MarioController : MonoBehaviour
 
     [Header("Mario hat mechanic")]
     public Transform cap;
+    public Transform capLanzar;
     public Transform pivotCap;
-    public Transform padreCap;
+    public Transform padreCapCabeza;
+    public Transform padreCapMano;
     public float rotateCapSpeed = 1.0f;
+    public float duracionHoldCap = 6f;
     private bool isThrowed = false;
     private bool isSpinning = false;
+    private bool vueltaGorroUpdate = false;
+
+
+    private float timeMaximoVuelta;
+
+    [Space]
+    [Header("Materials disolve")]
+    public Material disolveHat;
+    public Material disolveEyes;
+    public Material disolveRing;
+
 
     Vector3 rotationCapIncial;
     Vector3 positionCapIncial;
@@ -86,6 +100,8 @@ public class MarioController : MonoBehaviour
         SetGravityGround();
         LanzarGorroAnim();
         SetRotacionGorro();
+        if (vueltaGorroUpdate)
+            VueltaGorro();
     }
 
     #endregion
@@ -170,33 +186,71 @@ public class MarioController : MonoBehaviour
         {
             isThrowed = true;
             _animator.SetTrigger("lanzar");
+            //Ponemos los materiales para que el gorro de la sensacion de que se disuelve
+            Material[] disolveMaterials = { disolveHat, disolveRing, disolveEyes };
+            cap.GetComponent<MeshRenderer>().materials =disolveMaterials;
+            capLanzar.transform.parent.gameObject.SetActive(true);
         }
 
     }
 
     public void LanzarGorroMove()
     {
-        cap.transform.parent = null;
-        cap.transform.DOMove(pivotCap.position, 0.5f);
+        capLanzar.transform.parent = null;
+        capLanzar.transform.DOMove(pivotCap.position, 0.5f);
         isSpinning = true;
-        cap.transform.DORotate(new Vector3(18f, 0f, 368f), 0.1f);
-        Invoke("VueltaGorro", 3f);
+        capLanzar.transform.DORotate(new Vector3(18f, 0f, 368f), 0.1f);
+        Invoke("VueltaGorro", 2f);
+        timeMaximoVuelta = Time.time + duracionHoldCap;
+        capLanzar.GetComponent<BoxCollider>().enabled = true;
+
     }
 
     public void SetRotacionGorro()
     {
         if (isSpinning)
         {
-            cap.transform.Rotate(0f, rotateCapSpeed, 0f);
+            capLanzar.transform.Rotate(0f, rotateCapSpeed, 0f);
         }
     }
 
     public void VueltaGorro()
     {
-        cap.parent = padreCap.transform;
-        isSpinning = false;
-        cap.transform.DOLocalMove(Vector3.zero, 0.5f);
-        cap.transform.DOLocalRotate(Vector3.zero, 0.5f);
+        vueltaGorroUpdate = true;
+        if (!Input.GetMouseButton(0))
+        {
+            capLanzar.GetComponent<BoxCollider>().enabled = false;
+            capLanzar.parent = padreCapCabeza.transform;
+            isSpinning = false;
+            capLanzar.transform.DOLocalMove(Vector3.zero, 0.5f).OnComplete(() => ResetLanzamientoSombrero());
+            capLanzar.transform.DOLocalRotate(Vector3.zero, 0.5f);
+            vueltaGorroUpdate = false;
+        }
+        else if(Time.time > timeMaximoVuelta){
+            capLanzar.GetComponent<BoxCollider>().enabled = false;
+            capLanzar.parent = padreCapCabeza.transform;
+            isSpinning = false;
+            capLanzar.transform.DOLocalMove(Vector3.zero, 0.5f).OnComplete(() => ResetLanzamientoSombrero());
+            capLanzar.transform.DOLocalRotate(Vector3.zero, 0.5f);
+            vueltaGorroUpdate = false;
+        }
+
+        
+
+    }
+
+    public void ResetLanzamientoSombrero()
+    {
+        capLanzar.transform.parent = padreCapMano;
+        capLanzar.transform.parent.gameObject.SetActive(false);
+        capLanzar.transform.localPosition = Vector3.zero;
+        capLanzar.transform.eulerAngles = Vector3.zero;
+        isThrowed = false;
+    }
+
+    public void JumpVoltereta()
+    {
+        velocityGravity.y = Mathf.Sqrt(1.8f * -2f * gravity);
     }
 
     #endregion

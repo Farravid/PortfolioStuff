@@ -1,5 +1,97 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &35403983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 35403984}
+  m_Layer: 0
+  m_Name: MarioHatLanzar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &35403984
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35403983}
+  m_LocalRotation: {x: -0.574711, y: -0.08510208, z: -0.79720896, w: 0.16408162}
+  m_LocalPosition: {x: 0.227, y: -0.117, z: 0.041}
+  m_LocalScale: {x: 0.03425679, y: 0.03425679, z: 0.034256794}
+  m_Children:
+  - {fileID: 5745920676339013456}
+  m_Father: {fileID: 5873408452720998084}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: -18.922, y: 69.91, z: -170.029}
+--- !u!1 &165152879
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 165152880}
+  m_Layer: 0
+  m_Name: MarioHatIncial
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &165152880
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165152879}
+  m_LocalRotation: {x: -0.010898361, y: -0.032520667, z: 0.07420054, w: 0.9966534}
+  m_LocalPosition: {x: -0.032, y: 0.262, z: 0.121}
+  m_LocalScale: {x: 0.034256786, y: 0.034256786, z: 0.034256786}
+  m_Children:
+  - {fileID: 5745920675877784626}
+  m_Father: {fileID: 1860284194356575332}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: -0.96800005, y: -3.8100002, z: 8.548}
+--- !u!1 &2021698561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2021698562}
+  m_Layer: 0
+  m_Name: pivotHat
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2021698562
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021698561}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.08, y: 1.1, z: 9.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5745920675636358887}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &248525542918380442
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,7 +802,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2541457280464432744, guid: 6fbc92dfc5ad8c348945cd16c40e558d, type: 3}
+  - {fileID: 2100000, guid: 2353634189481f04a9ee3084e9aeb14d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -949,6 +1041,7 @@ Transform:
   - {fileID: 3497117373196843146}
   - {fileID: 5282225094494320169}
   - {fileID: 7307108264715300005}
+  - {fileID: 165152880}
   m_Father: {fileID: 1322739580093666590}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1219,7 +1312,7 @@ GameObject:
   - component: {fileID: 2386478482720479499}
   m_Layer: 0
   m_Name: Mario
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1238,6 +1331,7 @@ Transform:
   - {fileID: 2979274908037543578}
   - {fileID: 4781577759648771672}
   - {fileID: 283109563705511539}
+  - {fileID: 2021698562}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1254,7 +1348,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 58f6a01dd0d8f0d4ba0805bf977ed307, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -1275,6 +1369,13 @@ MonoBehaviour:
   moveSpeed: 3
   gravity: -9.81
   rotateSpeed: 5
+  cap: {fileID: 5745920675877784626}
+  pivotCap: {fileID: 2021698562}
+  padreCap: {fileID: 165152880}
+  rotateCapSpeed: 5
+  disolveHat: {fileID: 0}
+  disolveEyes: {fileID: 0}
+  disolveRing: {fileID: 0}
 --- !u!143 &2386478482720479499
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1286,13 +1387,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
+  m_Height: 1.7
+  m_Radius: 0.25
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.93, z: 0}
 --- !u!1 &5069166339514818681
 GameObject:
   m_ObjectHideFlags: 0
@@ -2018,6 +2119,7 @@ Transform:
   - {fileID: 6392061483149640036}
   - {fileID: 3943837884764843520}
   - {fileID: 4399229723268603378}
+  - {fileID: 35403984}
   m_Father: {fileID: 7756460785961647268}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2461,3 +2563,203 @@ Transform:
   m_Father: {fileID: 5558514463196420451}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &5203668662455578811
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 35403984}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Name
+      value: MarioOdysseyHat_high
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e01ac8f90fd02fe4b94b295614d29697, type: 3}
+--- !u!4 &5745920676339013456 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+    type: 3}
+  m_PrefabInstance: {fileID: 5203668662455578811}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5203668662950161369
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 165152880}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: b86a597868c500341a59de0d9a9e47c8, type: 2}
+    - target: {fileID: -7511558181221131132, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: a1df88093e328f349bb0499f34b714ad, type: 2}
+    - target: {fileID: -7511558181221131132, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d1788668620f95547ac0f9ecbc88b9b8, type: 2}
+    - target: {fileID: 919132149155446097, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Name
+      value: MarioOdysseyHat_high
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e01ac8f90fd02fe4b94b295614d29697, type: 3}
+--- !u!4 &5745920675877784626 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,
+    type: 3}
+  m_PrefabInstance: {fileID: 5203668662950161369}
+  m_PrefabAsset: {fileID: 0}

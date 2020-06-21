@@ -28,9 +28,13 @@ public class MarioController : MonoBehaviour
     [Header("Mario hat mechanic")]
     public Transform cap;
     public Transform pivotCap;
+    public Transform padreCap;
     public float rotateCapSpeed = 1.0f;
     private bool isThrowed = false;
     private bool isSpinning = false;
+
+    Vector3 rotationCapIncial;
+    Vector3 positionCapIncial;
 
 
 
@@ -69,6 +73,8 @@ public class MarioController : MonoBehaviour
         _cc = this.GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         DOTween.Init();
+        rotationCapIncial = cap.eulerAngles;
+        positionCapIncial = cap.localPosition;
 
     }
 
@@ -171,9 +177,10 @@ public class MarioController : MonoBehaviour
     public void LanzarGorroMove()
     {
         cap.transform.parent = null;
-        cap.transform.DOMove(pivotCap.position, 1f);
+        cap.transform.DOMove(pivotCap.position, 0.5f);
         isSpinning = true;
         cap.transform.DORotate(new Vector3(18f, 0f, 368f), 0.1f);
+        Invoke("VueltaGorro", 3f);
     }
 
     public void SetRotacionGorro()
@@ -182,6 +189,14 @@ public class MarioController : MonoBehaviour
         {
             cap.transform.Rotate(0f, rotateCapSpeed, 0f);
         }
+    }
+
+    public void VueltaGorro()
+    {
+        cap.parent = padreCap.transform;
+        isSpinning = false;
+        cap.transform.DOLocalMove(Vector3.zero, 0.5f);
+        cap.transform.DOLocalRotate(Vector3.zero, 0.5f);
     }
 
     #endregion

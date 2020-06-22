@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &35403984
 Transform:
   m_ObjectHideFlags: 0
@@ -86,7 +86,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021698561}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.08, y: 1.1, z: 9.4}
+  m_LocalPosition: {x: 0.08, y: 0.72, z: 9.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5745920675636358887}
@@ -1366,16 +1366,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b4d8f017648bfc4787e16dabc2cd39d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 5
   gravity: -9.81
   rotateSpeed: 5
+  cineCameraMario: {fileID: 0}
+  cineCameraTarget: {fileID: 0}
   cap: {fileID: 5745920675877784626}
+  capLanzar: {fileID: 5745920676339013456}
   pivotCap: {fileID: 2021698562}
-  padreCap: {fileID: 165152880}
-  rotateCapSpeed: 5
-  disolveHat: {fileID: 0}
-  disolveEyes: {fileID: 0}
-  disolveRing: {fileID: 0}
+  padreCapCabeza: {fileID: 165152880}
+  padreCapMano: {fileID: 35403984}
+  rotateCapSpeed: 10
+  duracionHoldCap: 5
+  disolveHatCabeza: {fileID: 2100000, guid: d1788668620f95547ac0f9ecbc88b9b8, type: 2}
+  disolveEyesCabeza: {fileID: 2100000, guid: a1df88093e328f349bb0499f34b714ad, type: 2}
+  disolveRingCabeza: {fileID: 2100000, guid: b86a597868c500341a59de0d9a9e47c8, type: 2}
+  disolveHatLanzar: {fileID: 2100000, guid: ab219203daa75a0458fae938dfe532af, type: 2}
+  disolveEyesLanzar: {fileID: 2100000, guid: 3ce48d6cbf81bf24993d42e2c13be9ad, type: 2}
+  disolveRingLanzar: {fileID: 2100000, guid: 49eade6a8dd1e9149813e4ef674d61bd, type: 2}
 --- !u!143 &2386478482720479499
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1394,6 +1402,33 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.93, z: 0}
+--- !u!135 &1182427819
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4969243651842641386}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 12
+  m_Center: {x: 0.5557491, y: -1.5815552, z: -1.4973947}
+--- !u!114 &1182427820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4969243651842641386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1176d51ef6bf9ea42a0d905329cf69d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 4969243651337155677}
+  marioController: {fileID: 823731943934932459}
 --- !u!1 &5069166339514818681
 GameObject:
   m_ObjectHideFlags: 0
@@ -2640,6 +2675,21 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ab219203daa75a0458fae938dfe532af, type: 2}
+    - target: {fileID: -7511558181221131132, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 49eade6a8dd1e9149813e4ef674d61bd, type: 2}
+    - target: {fileID: -7511558181221131132, guid: e01ac8f90fd02fe4b94b295614d29697,
+        type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3ce48d6cbf81bf24993d42e2c13be9ad, type: 2}
     - target: {fileID: 919132149155446097, guid: e01ac8f90fd02fe4b94b295614d29697,
         type: 3}
       propertyPath: m_Name
@@ -2647,6 +2697,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e01ac8f90fd02fe4b94b295614d29697, type: 3}
+--- !u!1 &4969243651842641386 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e01ac8f90fd02fe4b94b295614d29697,
+    type: 3}
+  m_PrefabInstance: {fileID: 5203668662455578811}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5745920676339013456 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e01ac8f90fd02fe4b94b295614d29697,

@@ -5,14 +5,21 @@ using UnityEngine;
 public class MarioHat : MonoBehaviour
 {
     public GameObject player;
+    public MarioController marioController;
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Colisiono con el player");
             player.GetComponent<Animator>().SetTrigger("voltereta");
+        }
+        if (other.gameObject.CompareTag("Transformarse"))
+        {
+            Debug.Log("Colisiono con alguien que se puede transformar");
+            marioController.setTransicion(true,other.gameObject);
+            other.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+            other.gameObject.GetComponent<TargetController>().enabled = true;
+
         }
     }
 }

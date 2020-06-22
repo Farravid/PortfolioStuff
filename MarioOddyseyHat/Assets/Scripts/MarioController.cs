@@ -25,7 +25,16 @@ public class MarioController : MonoBehaviour
     [Header("Smoothness Zooms y Rotaciones")]
     [Range(0, 10)] public float rotateSpeed = 5f;
 
+    [Header("Cinemachine reference")]
+    public Cinemachine.CinemachineFreeLook cineCameraMario;
+    public Cinemachine.CinemachineFreeLook cineCameraTarget;
+
+
+
+    [Space]
     [Header("Mario hat mechanic")]
+    public GameObject instanceMario;
+    [Space]
     public Transform cap;
     public Transform capLanzar;
     public Transform pivotCap;
@@ -36,11 +45,13 @@ public class MarioController : MonoBehaviour
     private bool isThrowed = false;
     private bool isSpinning = false;
     private bool vueltaGorroUpdate = false;
-
-    private bool cambiarMateriales = false;
-
-
     private float timeMaximoVuelta;
+
+    //Transicion a otro target
+    private GameObject targetCambiar;
+    private bool transicionOn;
+
+
 
     [Space]
     [Header("Materials disolve")]
@@ -53,8 +64,14 @@ public class MarioController : MonoBehaviour
     public Material disolveEyesLanzar;
     public Material disolveRingLanzar;
 
+    [Space]
+    public Material disolveHatTarget;
+    public Material disolverEyesTarget;
+    public Material disolveRingTarget;
+
     float cambioTransparente = 0f;
     float cambioOpaco = 100f;
+    private bool cambiarMateriales = false;
 
 
 
@@ -106,6 +123,10 @@ public class MarioController : MonoBehaviour
         disolveEyesCabeza.SetFloat("Vector1_7527672C", 0);
         disolveRingCabeza.SetFloat("Vector1_7AE198B8", 0);
 
+        disolveHatTarget.SetFloat("Vector1_5A2F4A5", 1);
+        disolverEyesTarget.SetFloat("Vector1_7527672C", 1);
+        disolveRingTarget.SetFloat("Vector1_7AE198B8", 1);
+
 
     }
 
@@ -120,6 +141,7 @@ public class MarioController : MonoBehaviour
         if (vueltaGorroUpdate)
             VueltaGorro();
         AlphaMateriales();
+        TransicionTransformarse();
     }
 
     #endregion
@@ -224,6 +246,7 @@ public class MarioController : MonoBehaviour
             disolveHatLanzar.SetFloat("Vector1_5A2F4A5", cambioOpaco / 100f);
             disolveEyesLanzar.SetFloat("Vector1_7527672C", cambioOpaco / 100f);
             disolveRingLanzar.SetFloat("Vector1_7AE198B8", cambioOpaco / 100f);
+
         }
     }
 
@@ -241,7 +264,7 @@ public class MarioController : MonoBehaviour
         capLanzar.transform.DORotate(new Vector3(18f, 0f, 368f), 0.1f);
         Invoke("VueltaGorro", 2f);
         timeMaximoVuelta = Time.time + duracionHoldCap;
-        capLanzar.GetComponent<BoxCollider>().enabled = true;
+        capLanzar.GetComponent<SphereCollider>().enabled = true;
 
     }
 
@@ -258,7 +281,7 @@ public class MarioController : MonoBehaviour
         vueltaGorroUpdate = true;
         if (!Input.GetMouseButton(0))
         {
-            capLanzar.GetComponent<BoxCollider>().enabled = false;
+            capLanzar.GetComponent<SphereCollider>().enabled = false;
             capLanzar.parent = padreCapCabeza.transform;
             isSpinning = false;
             capLanzar.transform.DOLocalMove(Vector3.zero, 0.5f).OnComplete(() => ResetLanzamientoSombrero());
@@ -266,7 +289,7 @@ public class MarioController : MonoBehaviour
             vueltaGorroUpdate = false;
         }
         else if(Time.time > timeMaximoVuelta){
-            capLanzar.GetComponent<BoxCollider>().enabled = false;
+            capLanzar.GetComponent<SphereCollider>().enabled = false;
             capLanzar.parent = padreCapCabeza.transform;
             isSpinning = false;
             capLanzar.transform.DOLocalMove(Vector3.zero, 0.5f).OnComplete(() => ResetLanzamientoSombrero());
@@ -296,6 +319,47 @@ public class MarioController : MonoBehaviour
     public void JumpVoltereta()
     {
         velocityGravity.y = Mathf.Sqrt(1.8f * -2f * gravity);
+        capLanzar.GetComponent<SphereCollider>().enabled = false;
+        capLanzar.parent = padreCapCabeza.transform;
+        isSpinning = false;
+        capLanzar.transform.DOLocalMove(Vector3.zero, 0.5f).OnComplete(() => ResetLanzamientoSombrero());
+        capLanzar.transform.DOLocalRotate(Vector3.zero, 0.5f);
+        vueltaGorroUpdate = false;
+    }
+
+    public void TransicionTransformarse()
+    {
+        if (transicionOn)
+        {
+            //El gorro de lanzar
+            cambioTransparente += 1f;
+            disolveHatLanzar.SetFloat("Vector1_5A2F4A5", cambioTransparente / 100f);
+            disolveEyesLanzar.SetFloat("Vector1_7527672C", cambioTransparente / 100f);
+            disolveRingLanzar.SetFloat("Vector1_7AE198B8", cambioTransparente / 100f);
+
+            cineCameraMario.Priority = 0;
+            cineCameraTarget.Priority = 1;
+
+            //El de cada target
+            cambioOpaco -= 0.5f;
+            disolveHatTarget.SetFloat("Vector1_5A2F4A5", cambioOpaco / 100f);
+            disolverEyesTarget.SetFloat("Vector1_7527672C", cambioOpaco / 100f);
+            disolveRingTarget.SetFloat("Vector1_7AE198B8", cambioOpaco / 100f);
+
+
+        }
+    }
+
+    public bool getTransicion()
+    {
+        return transicionOn;
+    }
+    public void setTransicion(bool t, GameObject target)
+    {
+        transicionOn = t;
+        if (target != null)
+            targetCambiar = target;
+
     }
 
     #endregion

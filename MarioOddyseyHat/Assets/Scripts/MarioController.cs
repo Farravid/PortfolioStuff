@@ -37,14 +37,25 @@ public class MarioController : MonoBehaviour
     private bool isSpinning = false;
     private bool vueltaGorroUpdate = false;
 
+    private bool cambiarMateriales = false;
+
 
     private float timeMaximoVuelta;
 
     [Space]
     [Header("Materials disolve")]
-    public Material disolveHat;
-    public Material disolveEyes;
-    public Material disolveRing;
+    public Material disolveHatCabeza;
+    public Material disolveEyesCabeza;
+    public Material disolveRingCabeza;
+
+    [Space]
+    public Material disolveHatLanzar;
+    public Material disolveEyesLanzar;
+    public Material disolveRingLanzar;
+
+    float cambioTransparente = 0f;
+    float cambioOpaco = 100f;
+
 
 
     Vector3 rotationCapIncial;
@@ -90,6 +101,12 @@ public class MarioController : MonoBehaviour
         rotationCapIncial = cap.eulerAngles;
         positionCapIncial = cap.localPosition;
 
+        //Materiales
+        disolveHatCabeza.SetFloat("Vector1_5A2F4A5", 0);
+        disolveEyesCabeza.SetFloat("Vector1_7527672C", 0);
+        disolveRingCabeza.SetFloat("Vector1_7AE198B8", 0);
+
+
     }
 
 
@@ -102,6 +119,7 @@ public class MarioController : MonoBehaviour
         SetRotacionGorro();
         if (vueltaGorroUpdate)
             VueltaGorro();
+        AlphaMateriales();
     }
 
     #endregion
@@ -126,8 +144,6 @@ public class MarioController : MonoBehaviour
             }
         }
     }
-
-
     public void PlayerInput(bool rot)
     {
         InputX = Input.GetAxis("Horizontal");
@@ -156,7 +172,6 @@ public class MarioController : MonoBehaviour
         _cc.Move(desiredMovement * delta);
 
     }
-
     public void SetGravityGround()
     {
         isGrounded = Physics.Raycast(_cc.bounds.min, Vector3.down, 0.1f);
@@ -187,15 +202,39 @@ public class MarioController : MonoBehaviour
             isThrowed = true;
             _animator.SetTrigger("lanzar");
             //Ponemos los materiales para que el gorro de la sensacion de que se disuelve
-            Material[] disolveMaterials = { disolveHat, disolveRing, disolveEyes };
-            cap.GetComponent<MeshRenderer>().materials =disolveMaterials;
-            capLanzar.transform.parent.gameObject.SetActive(true);
+            cambiarMateriales = true;
+            padreCapMano.gameObject.SetActive(true);
         }
 
     }
 
+    public void AlphaMateriales()
+    {
+
+        if (cambiarMateriales)
+        {
+            //El gorro de la cabeza
+            cambioTransparente += 0.7f;
+            disolveHatCabeza.SetFloat("Vector1_5A2F4A5", cambioTransparente/100f);
+            disolveEyesCabeza.SetFloat("Vector1_7527672C", cambioTransparente / 100f);
+            disolveRingCabeza.SetFloat("Vector1_7AE198B8", cambioTransparente / 100f);
+
+            //El de lanzar
+            cambioOpaco -= 1f;
+            disolveHatLanzar.SetFloat("Vector1_5A2F4A5", cambioOpaco / 100f);
+            disolveEyesLanzar.SetFloat("Vector1_7527672C", cambioOpaco / 100f);
+            disolveRingLanzar.SetFloat("Vector1_7AE198B8", cambioOpaco / 100f);
+        }
+    }
+
     public void LanzarGorroMove()
     {
+        //Para que los materiales se reseten bien
+        cambiarMateriales = false;
+        cambioTransparente = 0f;
+        cambioOpaco = 100f;
+
+        padreCapMano.gameObject.SetActive(false);
         capLanzar.transform.parent = null;
         capLanzar.transform.DOMove(pivotCap.position, 0.5f);
         isSpinning = true;
@@ -241,6 +280,12 @@ public class MarioController : MonoBehaviour
 
     public void ResetLanzamientoSombrero()
     {
+        //Reseteamos los colores del material
+        disolveHatCabeza.SetFloat("Vector1_5A2F4A5",0f);
+        disolveEyesCabeza.SetFloat("Vector1_7527672C", 0f);
+        disolveRingCabeza.SetFloat("Vector1_7AE198B8",0f);
+
+
         capLanzar.transform.parent = padreCapMano;
         capLanzar.transform.parent.gameObject.SetActive(false);
         capLanzar.transform.localPosition = Vector3.zero;

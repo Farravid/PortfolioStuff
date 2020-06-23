@@ -19,7 +19,7 @@ public class MarioHat : MonoBehaviour
             marioController.setTransicion(true,other.gameObject);
             other.gameObject.transform.GetChild(0).gameObject.SetActive(true);
             other.gameObject.GetComponent<TargetController>().enabled = true;
-
+            marioController.setTargetMario(other.gameObject);
         }
     }
 }

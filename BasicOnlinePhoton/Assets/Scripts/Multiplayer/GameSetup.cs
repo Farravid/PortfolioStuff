@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using System.IO;
+using Cinemachine;
 
 public class GameSetup : MonoBehaviourPunCallbacks
 {

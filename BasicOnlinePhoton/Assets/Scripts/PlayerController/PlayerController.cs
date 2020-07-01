@@ -47,6 +47,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
     public static GameObject LocalPlayerInstance;
 
+    [Tooltip("Camera de cada jugador")]
+    public GameObject playerCamera;
+
+
+
 
     #endregion
 
@@ -66,6 +71,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //Cursor.lockState = CursorLockMode.Locked;
         _cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+        if (photonView.IsMine)
+        {
+            Debug.Log("Nombre del jugador: "+photonView.Owner.NickName);
+            playerCamera.SetActive(true);
+        }
+        else{
+            playerCamera.SetActive(false);
+        }
     }
 
     void Update()
@@ -144,4 +157,5 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 
     #endregion
+
 }

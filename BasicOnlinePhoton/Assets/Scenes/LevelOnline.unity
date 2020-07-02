@@ -283,9 +283,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 56.4
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -310,8 +310,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 137817748}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.18223113, y: 0.00000003383655, z: -0.000000006271077, w: 0.98325574}
+  m_LocalPosition: {x: 3.287626, y: 3.3, z: -6.040644}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -515,7 +515,7 @@ GameObject:
   - component: {fileID: 1402744703}
   - component: {fileID: 1402744702}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: CanvasLeave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

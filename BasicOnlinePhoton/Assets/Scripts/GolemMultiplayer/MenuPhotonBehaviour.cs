@@ -16,12 +16,35 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
     //Minimo de jugadores para que empiece la partida
     private const int MinPlayersStart = 2;
     //Maximo de jugadores en una partida
-    private const int MaxPlayerStop = 8;
+    private const int MaxPlayerStop = 3;
 
     //Texto de info para buscar partida rapida
     public Text waitingText;
 
+    //Queremos saber si el jugador se encuentra en una sala o no para actualizarle los jugadores que hay en la sala
+    private bool isInRoom = false;
+
+
+    //
+    public Button botonCancelarPartidaRapida;
+
     private void Awake() => PhotonNetwork.AutomaticallySyncScene = true;
+
+    private void Update()
+    {
+
+
+        EstablecerTextoPartidaRapida();
+
+    }
+
+    private void EstablecerTextoPartidaRapida()
+    {
+        if (isInRoom)
+            waitingText.text = PhotonNetwork.CurrentRoom.PlayerCount + "/8 jugadores. Buscando mas oponenetes";
+        else if (!isConnected)
+            waitingText.text = "";
+    }
 
     public void InicioPartidaRapida()
     {
@@ -44,6 +67,13 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
         }
     }
 
+    public void CancelarPartidaRapida()
+    {
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.Disconnect();
+        botonCancelarPartidaRapida.interactable = false;
+    }
+
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to master");
@@ -62,8 +92,9 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        botonCancelarPartidaRapida.interactable = true;
+        isInRoom = true;
         Debug.Log("Client successfully joined a room");
-        waitingText.text = PhotonNetwork.CurrentRoom.PlayerCount + "/8 jugadores. Buscando mas oponenetes";
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
         if(playerCount != MinPlayersStart)
@@ -84,20 +115,34 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MaxPlayerStop });
     }
 
+    public override void OnLeftRoom()
+    {
+        isConnected = false;
+        isInRoom = false;
+    }
+
+
+
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         //Establecemos el numero de jugadores que hay en la sala para que se sepa cuando va a empezar
-
+        
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == MaxPlayerStop)
         {
+            //No se podra acceder a la sala
             PhotonNetwork.CurrentRoom.IsOpen = false;
+
             PhotonNetwork.LoadLevel(1);
-        }else if (PhotonNetwork.CurrentRoom.PlayerCount >= MinPlayersStart && PhotonNetwork.CurrentRoom.PlayerCount < MaxPlayerStop)
+        }
+        else if (PhotonNetwork.CurrentRoom.PlayerCount >= MinPlayersStart && PhotonNetwork.CurrentRoom.PlayerCount < MaxPlayerStop)
         {
             PhotonNetwork.LoadLevel(1);
         }
-
     }
+
+
+
+
 
 }

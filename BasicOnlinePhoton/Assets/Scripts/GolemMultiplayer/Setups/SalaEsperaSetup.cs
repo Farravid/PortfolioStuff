@@ -12,9 +12,16 @@ public class SalaEsperaSetup : MonoBehaviourPunCallbacks
     [Tooltip("The prefab to use for representing the player")]
     public GameObject playerPrefabQuieto;
 
+    [Tooltip("The prefab to use for representing the name of the player")]
+    public GameObject playerTagPrefab;
+
+    public static GameObject playerTagInstance;
+
     public List<Transform> spawnSalaTransforms;
 
     private int numeroJugadores;
+
+    public List<GameObject> jugadores;
 
     private GameObject instancePlayerParado;
 
@@ -22,8 +29,56 @@ public class SalaEsperaSetup : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        //InstanciarNombreJugador();
         InstanciarJugadorParado();
     }
+
+   //private void InstanciarNombreJugador()
+    //{
+      //  playerTagInstance = (GameObject)PhotonNetwork.Instantiate(this.playerTagPrefab.name, Vector3.zero, Quaternion.identity, 0);
+    //}
+
+
+    /*private void Update()
+    {
+        ContarJugadores();
+    }
+
+    private void ContarJugadores()
+    {
+        numeroJugadores = PhotonNetwork.CurrentRoom.PlayerCount;
+        switch (numeroJugadores)
+        {
+            case 1:
+                jugadores[0].SetActive(true);
+                jugadores[1].SetActive(false);
+                jugadores[2].SetActive(false);
+                jugadores[3].SetActive(false);
+                break;
+            case 2:
+                jugadores[0].SetActive(true);
+                jugadores[1].SetActive(true);
+                jugadores[2].SetActive(false);
+                jugadores[3].SetActive(false);
+                break;
+            case 3:
+                jugadores[0].SetActive(true);
+                jugadores[1].SetActive(true);
+                jugadores[2].SetActive(true);
+                jugadores[3].SetActive(false);
+                break;
+            case 4:
+                jugadores[0].SetActive(true);
+                jugadores[1].SetActive(true);
+                jugadores[2].SetActive(true);
+                jugadores[3].SetActive(true);
+                break;
+        }
+    }*/
+
+    
+
+
 
     private void InstanciarJugadorParado()
     {
@@ -37,7 +92,6 @@ public class SalaEsperaSetup : MonoBehaviourPunCallbacks
        return spawnSalaTransforms[numJugadores - 1];
 
     }
-
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {

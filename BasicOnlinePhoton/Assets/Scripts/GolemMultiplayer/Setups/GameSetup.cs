@@ -28,6 +28,23 @@ public class GameSetup : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Update()
+    {
+        DestruirCopiaPlayer();
+    }
+
+    private void DestruirCopiaPlayer()
+    {
+        GameObject destuir = GameObject.FindWithTag("PlayerWaiting");
+        if (destuir != null)
+        {
+            Debug.Log("Destuyo");
+            Destroy(destuir);
+        }
+    }
+
+
+
     /// <summary>
     /// Called when the local player left the room. We need to load the launcher scene.
     /// </summary>
@@ -43,10 +60,7 @@ public class GameSetup : MonoBehaviourPunCallbacks
     /// <param name="other"></param>
     public override void OnPlayerEnteredRoom(Player other)
     {
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-            //LoadNivelOnline();
-        //}
+
     }
 
     /// <summary>

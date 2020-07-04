@@ -30,7 +30,9 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
     //varibales booleanas para controlar el estado del juego en la sala de espera
     private bool isReadyToCountDown;
     private bool isReadyToStart;
-    private bool isStartingGame;
+    //Esta variable nos indica si el juego ha empezado
+    [NonSerialized]
+    private bool isStartingGame = false;
 
     //variables para el countdown
     private float timerToStartGame;
@@ -170,6 +172,10 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
     public void AbandonarSalaClicked()
     {
         PhotonNetwork.LeaveRoom();
+    }
+
+    public override void OnLeftRoom()
+    {
         SceneManager.LoadScene(menuPrincipalSceneIndex);
     }
 

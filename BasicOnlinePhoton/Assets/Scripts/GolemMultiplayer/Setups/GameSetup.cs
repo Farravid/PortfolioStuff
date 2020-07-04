@@ -43,13 +43,10 @@ public class GameSetup : MonoBehaviourPunCallbacks
     /// <param name="other"></param>
     public override void OnPlayerEnteredRoom(Player other)
     {
-        Debug.LogFormat("OnPlayerEnteredRoom() {0}", other.NickName); // not seen if you're the player connecting
-
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            LoadNivelOnline();
-        }
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+            //LoadNivelOnline();
+        //}
     }
 
     /// <summary>
@@ -59,11 +56,11 @@ public class GameSetup : MonoBehaviourPunCallbacks
     /// <param name="other"></param>
     public override void OnPlayerLeftRoom(Player other)
     {
-        Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
-        if (PhotonNetwork.IsMasterClient)
-        {
-            LoadNivelOnline();
-        }
+        //Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+          //  LoadNivelOnline();
+        //}
     }
 
 
@@ -84,13 +81,13 @@ public class GameSetup : MonoBehaviourPunCallbacks
     /// <summary>
     /// Si somos el host, cargamos el nivel correspondiente
     /// </summary>
-    void LoadNivelOnline()
+    /*void LoadNivelOnline()
     {
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.LoadLevel(1);
         else
             return;
-    }
+    }*/
 
     #endregion
 }

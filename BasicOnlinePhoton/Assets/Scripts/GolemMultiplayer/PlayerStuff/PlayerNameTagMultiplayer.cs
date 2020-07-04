@@ -11,8 +11,13 @@ public class PlayerNameTagMultiplayer : MonoBehaviourPun
 
     private void Start()
     {
-        if (photonView.IsMine) { return; }
-        SetName();
+        if (photonView.IsMine) {
+            SetName(Color.red);
+        }
+        else
+        {
+            SetName(Color.black);
+        }
     }
 
     private void LateUpdate()
@@ -22,5 +27,8 @@ public class PlayerNameTagMultiplayer : MonoBehaviourPun
 
     }
 
-    private void SetName() => nameTagText.text = photonView.Owner.NickName;
+    private void SetName(Color color) {
+        nameTagText.text = photonView.Owner.NickName;
+        nameTagText.color = color;
+    }
 }

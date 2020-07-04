@@ -1,11 +1,12 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
+public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 {
     private bool isConnected = false;
 
@@ -14,44 +15,25 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
     private const string GameVersion = "0.1";
 
     //Minimo de jugadores para que empiece la partida
-    private const int MinPlayersStart = 2;
+    private const int MinPlayersStart = 1;
     //Maximo de jugadores en una partida
-    private const int MaxPlayerStop = 3;
+    private const int MaxPlayerStop = 4;
 
-    //Texto de info para buscar partida rapida
-    public Text waitingText;
-
-    //Queremos saber si el jugador se encuentra en una sala o no para actualizarle los jugadores que hay en la sala
-    private bool isInRoom = false;
+    [Tooltip("Index de la escena de la sala de espera que cargara una vez le demos a buscar partida rapida")]
+    [SerializeField] private int indexEscenaSalaEspera; 
 
 
-    //
-    public Button botonCancelarPartidaRapida;
+
+
 
     private void Awake() => PhotonNetwork.AutomaticallySyncScene = true;
 
-    private void Update()
-    {
-
-
-        EstablecerTextoPartidaRapida();
-
-    }
-
-    private void EstablecerTextoPartidaRapida()
-    {
-        if (isInRoom)
-            waitingText.text = PhotonNetwork.CurrentRoom.PlayerCount + "/8 jugadores. Buscando mas oponenetes";
-        else if (!isConnected)
-            waitingText.text = "";
-    }
+    #region UI Methods
 
     public void InicioPartidaRapida()
     {
         isConnected = true;
 
-        //El texto que aparece en pantalla de carga
-        waitingText.text = "Buscando partida...";
 
         //La ui tenemos que cambiarla
 
@@ -61,18 +43,25 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
             // o podemos entrar a una sala de espera tipo risk of rain
             PhotonNetwork.JoinRandomRoom();
         }
-        else {
+        else
+        {
             PhotonNetwork.GameVersion = GameVersion;
             PhotonNetwork.ConnectUsingSettings();
         }
     }
 
-    public void CancelarPartidaRapida()
+
+    public void CancelarBusquedaPartidaRapida()
     {
-        PhotonNetwork.LeaveRoom();
         PhotonNetwork.Disconnect();
-        botonCancelarPartidaRapida.interactable = false;
     }
+
+
+
+    #endregion
+
+
+    #region Callbacks Methods
 
     public override void OnConnectedToMaster()
     {
@@ -86,14 +75,11 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        //Ajustar ui
         Debug.Log("Desconectado debido a " + cause);
     }
 
     public override void OnJoinedRoom()
     {
-        botonCancelarPartidaRapida.interactable = true;
-        isInRoom = true;
         Debug.Log("Client successfully joined a room");
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
@@ -107,6 +93,7 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
         {
             Debug.Log("Listo para empezar");
         }
+        PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -115,33 +102,24 @@ public class MenuPhotonBehaviour : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MaxPlayerStop });
     }
 
-    public override void OnLeftRoom()
-    {
-        isConnected = false;
-        isInRoom = false;
-    }
-
-
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        //Establecemos el numero de jugadores que hay en la sala para que se sepa cuando va a empezar
-        
+        //Debug.Log("Hola entro aqui");
 
-        if (PhotonNetwork.CurrentRoom.PlayerCount == MaxPlayerStop)
+
+        /*if (PhotonNetwork.CurrentRoom.PlayerCount == MaxPlayerStop)
         {
-            //No se podra acceder a la sala
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-
-            PhotonNetwork.LoadLevel(1);
+            PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
         }
         else if (PhotonNetwork.CurrentRoom.PlayerCount >= MinPlayersStart && PhotonNetwork.CurrentRoom.PlayerCount < MaxPlayerStop)
         {
-            PhotonNetwork.LoadLevel(1);
-        }
+            PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
+        }*/
+        PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
     }
 
-
+    #endregion
 
 
 

@@ -46,15 +46,74 @@ public class PlayerSpawnSalaEspera : MonoBehaviourPunCallbacks
     /// <author>David Martinez Garcia</author>
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        int contadorPosicionPlayer = 1;
+
+        //1 4 6
+        //- 4 6
+
+
+        //1 2 3 4 5 6
+        //1 2 - 4 5 6
+
+        //lista que se queda cuando se va
+        //1 2 4 5 6
+
+        // los que son mas altos que el que se ha ido es 4 5 6
 
         Player[] playerList = PhotonNetwork.PlayerList;
+
+
+        int idSuperar = otherPlayer.ActorNumber;
+
+        int posNumerosId = 0;
+
+        if(PhotonNetwork.CurrentRoom.PlayerCount > 0)
+        {
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                //Si la posicion es menor del que se ha ido es cdecir ses queda quieto
+                if(playerList[i].ActorNumber < idSuperar)
+                {
+                    posNumerosId++;
+                }
+                //Si la posicion es mayor se tiene que mover a la anterior
+                else
+                {
+                    //la posicion en este caso sera la 3 que sera mayor pq antes era 3 y ahora 4
+                    if(PhotonNetwork.LocalPlayer.ActorNumber == playerList[posNumerosId].ActorNumber && photonView.IsMine)
+                    {
+                        //Hemos movido el primer jugador ahora solo hace falta hacer una cadena con los demas
+                        this.transform.position = ElegirSpawnSalaEspera(posNumerosId).position;
+                        //posNumerosId++;
+                        break;
+                    }
+                }
+            }
+
+            //1 2 4 5 6
+            for (int i = 0;i<playerList.Length; i++)
+            {
+                if (i > posNumerosId){
+                    if (PhotonNetwork.LocalPlayer.ActorNumber == playerList[i].ActorNumber && photonView.IsMine)
+                    {
+                        this.transform.position = ElegirSpawnSalaEspera(i).position;
+                    }
+                }
+            }
+        }
+
+
+
+        /*int contadorPosicionPlayer = 1;
+
+        Player[] playerList = PhotonNetwork.PlayerList;
+
+        int idSuperar = otherPlayer.ActorNumber;
 
         if (PhotonNetwork.CurrentRoom.PlayerCount > 0)
         {
             for (int i = 0; i < playerList.Length; i++)
             {
-                if (otherPlayer.ActorNumber < PhotonNetwork.LocalPlayer.ActorNumber)
+                if (idSuperar < PhotonNetwork.LocalPlayer.ActorNumber)
                 {
                     //Mover jugador
                     if (photonView.IsMine)
@@ -68,7 +127,7 @@ public class PlayerSpawnSalaEspera : MonoBehaviourPunCallbacks
                     contadorPosicionPlayer++;
                 }
             }
-        }
+        }*/
     }
 
     #endregion
@@ -94,7 +153,7 @@ public class PlayerSpawnSalaEspera : MonoBehaviourPunCallbacks
     /// <author>David Martinez Garcia</author>
     private Transform ElegirSpawnSalaEspera(int numJugadores)
     {
-        return spawnSalaTransforms[numJugadores - 1];
+        return spawnSalaTransforms[numJugadores];
     }
     #endregion
 }

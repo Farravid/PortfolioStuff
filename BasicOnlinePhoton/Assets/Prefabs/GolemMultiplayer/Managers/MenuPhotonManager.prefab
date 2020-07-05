@@ -43,5 +43,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93fca563f09fbcb438ae66becba958bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitingText: {fileID: 0}
-  botonCancelarPartidaRapida: {fileID: 0}
+  indexEscenaSalaEspera: 1

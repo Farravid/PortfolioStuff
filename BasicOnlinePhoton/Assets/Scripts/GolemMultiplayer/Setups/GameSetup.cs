@@ -7,81 +7,60 @@ using Photon.Realtime;
 using System.IO;
 using Cinemachine;
 
+/// <summary>
+/// Este script establece la disposicion de los elementos del juego.
+/// Es decir, prepara el juego
+/// </summary>
+/// <author>David Martinez Garcia</author>
+
 public class GameSetup : MonoBehaviourPunCallbacks
 {
+    /// <summary>
+    /// Este script debe ir atacheado a un objeto en la escena del juego.
+    /// Este objeto sera el que maneje el setup del juego, ej: GameSetupController como objeto
+    /// </summary>
+    /// <author>David Martinez Garcia</author>
+
+    #region Variables
+
     [Tooltip("The prefab to use for representing the player")]
     public GameObject playerPrefab;
+
+    #endregion
 
     #region Callbacks Methods
 
     private void Start()
     {
-        if (PlayerController.LocalPlayerInstance == null)
-        {
-            Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-            // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-        }
-        else
-        {
-            Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
-        }
+        InstanciarJugador();
     }
+
+
 
     private void Update()
     {
         DestruirCopiaPlayer();
     }
 
-    private void DestruirCopiaPlayer()
-    {
-        GameObject destuir = GameObject.FindWithTag("PlayerWaiting");
-        if (destuir != null)
-        {
-            Debug.Log("Destuyo");
-            Destroy(destuir);
-        }
-    }
-
-
-
     /// <summary>
     /// Called when the local player left the room. We need to load the launcher scene.
+    /// Carga el menu principal
     /// </summary>
+    /// <author>David Martinez Garcia</author>
     public override void OnLeftRoom()
     {
         SceneManager.LoadScene(0);
     }
 
-    /// <summary>
-    /// Este metodo comprueba cuando un jugador se conecta a la sala.
-    /// En caso de este jugador ser el host de la sala se creara el juego, si no lo es, tan solo se unira
-    /// </summary>
-    /// <param name="other"></param>
-    public override void OnPlayerEnteredRoom(Player other)
-    {
-
-    }
-
-    /// <summary>
-    /// Este metodo comprueba cuando un jugador deja la sala
-    /// En caso de que el jugador que haya dejado la sala sea el host de la partida, la partida se volvera a cargar estableciendo un nuevo host
-    /// </summary>
-    /// <param name="other"></param>
-    public override void OnPlayerLeftRoom(Player other)
-    {
-        //Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-          //  LoadNivelOnline();
-        //}
-    }
-
-
     #endregion
 
     #region UI Methods
 
+    /// <summary>
+    /// Cuando el jugador pulsa el boton de salir de la sala.
+    /// Abandona la sala
+    /// </summary>
+    /// <author>David Martinez Garcia</author>
     public void OnSalirSalaClicked()
     {
         PhotonNetwork.LeaveRoom();
@@ -91,17 +70,33 @@ public class GameSetup : MonoBehaviourPunCallbacks
 
     #region Metodos privados
 
+    /// <summary>
+    /// Si lo permite, se instancia el jugador en el juego, en una determinada posicion y con una determina rotacion.
+    /// El permiso para instanciar el jugador esta controlado en el playerController
+    /// </summary>
+    /// <author>David Martinez Garcia</author>
+    private void InstanciarJugador()
+    {
+        if (PlayerController.LocalPlayerInstance == null)
+        {
+            // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+        }
+    }
 
     /// <summary>
-    /// Si somos el host, cargamos el nivel correspondiente
+    /// Al principio del juego, hay posibilidad que se instancie algun objeto no deseado de la sala de espera.
+    /// Este meotodo los elimina en caso de que haya alguno.
     /// </summary>
-    /*void LoadNivelOnline()
+    /// <author>David Martinez Garcia</author>
+    private void DestruirCopiaPlayer()
     {
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.LoadLevel(1);
-        else
-            return;
-    }*/
+        GameObject destuir = GameObject.FindWithTag("PlayerWaiting");
+        if (destuir != null)
+        {
+            Destroy(destuir);
+        }
+    }
 
     #endregion
 }

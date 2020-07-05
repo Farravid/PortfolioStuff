@@ -5,7 +5,9 @@ using UnityEngine;
 /// <summary>
 /// Este script se encarga de manejar el menu principal online del juego, es decir,
 /// el movimiento entre salas, conexiones y desconxiones de los jugadores a la hora de buscar partida etc...
+/// Este script debe estar atacheado a un gameobject en la escena principal del menu
 /// </summary>
+/// <author> David Martinez Garcia </author>
 
 public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 {
@@ -34,14 +36,12 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 
     /// <summary>
     /// Metodo que establece las caracteristicas principales de nuestro modo de juego partida rapida.
-    /// Este metodo se activa una vez pulsas buscar partida rapida
+    /// Este metodo se activa una vez pulsas buscar partida rapida. Debe ir en el on Click de buscar partida
     /// </summary>
+    /// /// <author> David Martinez Garcia </author>
     public void InicioPartidaRapida()
     {
         isConnected = true;
-
-
-        //La ui tenemos que cambiarla
 
         if (PhotonNetwork.IsConnected)
         {
@@ -59,8 +59,10 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 
     /// <summary>
     /// Cancela la busqueda de partida rapida una vez esta buscando.
-    /// Este metodo se activa cuando le damos al boton de cancelar partida rapida una vez estamos buscando
+    /// Este metodo se activa cuando le damos al boton de cancelar partida rapida una vez estamos buscando.
+    /// Debe ir en el onclick del boton cancelar del menu principal
     /// </summary>
+    /// /// <author> David Martinez Garcia </author>
     public void CancelarBusquedaPartidaRapida()
     {
         PhotonNetwork.Disconnect();
@@ -76,6 +78,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// Este callback se llama cuando el cliente se conecta a los servidores maestros de photon.
     /// </summary>
+    /// /// <author> David Martinez Garcia </author>
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to master");
@@ -90,6 +93,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// Este callback se llama cuando el cliente se desconecta de los servidores de photon
     /// </summary>
     /// <param name="cause">Causa de la desconexion</param>
+    /// /// <author> David Martinez Garcia </author>
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.Log("Desconectado debido a " + cause);
@@ -99,6 +103,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// Se llama cuando un jugador logra entrar en una sala con exito.
     /// En nuesetro caso, si logra entrar con exito cargara la sala de espera de los jugadores
     /// </summary>
+    /// /// <author> David Martinez Garcia </author>
     public override void OnJoinedRoom()
     {
         PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
@@ -110,6 +115,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="returnCode"></param>
     /// <param name="message"></param>
+    /// /// <author> David Martinez Garcia </author>
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log("No clients are waiting for opponent, creating a new room");
@@ -117,7 +123,5 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     }
 
     #endregion
-
-
 
 }

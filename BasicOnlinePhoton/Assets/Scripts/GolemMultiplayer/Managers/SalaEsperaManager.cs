@@ -5,12 +5,22 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// Este script se encarga de manejar el comportamiento de la sala de espera con delay. Se encarga de las conexiones y desconexiones de los jugadores
+/// ademas, se encarga de establecer y sincronizar la cuenta atras de los jugadores para poder empezar.
+/// </summary>
+/// <author> David Martinez Garcia </author>
+
 public class SalaEsperaManager : MonoBehaviourPunCallbacks
 {
     /// <summary>
     /// Este script debe estar atacheado a un objeto de la sala que va a utilizarse como manager de la sala de espera de partida rapida
     /// Ademas el objeto al que este atacheado tiene que tener un photon view
     /// </summary>
+    /// <author> David Martinez Garcia </author>
+
+
+    #region Variables
 
     [Header("Navegacion entre escenas")]
     [SerializeField] private int multiplayerSceneIndex;
@@ -40,14 +50,17 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
     private float fullGameTimer;
 
     //variables para saber cuanto dura cada cuenta atras, ademas tambien las utilizaremos para resetear la cuenta atras
+    [Tooltip("Maximo tiempo de espera. Cuando la sala esta lista para jugar pero no llena")]
     [SerializeField]
     private float maxWaitTime;
+    [Tooltip("Minimo timepo de espera. Cuando la sala esta llena")]
     [SerializeField]
     private float maxFullRoomWaitTIme;
 
+    #endregion
 
 
-
+    #region Init
     void Start()
     {
         //Inicializamos variables
@@ -58,6 +71,15 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
         ContadorJugadores();
     }
 
+    #endregion
+
+    #region Delay Room
+
+    /// <summary>
+    /// Este metodo cuenta los jugadores que hay actualmente en la sala, y establece el estado de la sala
+    /// en consecuencia a los jugadores que haya
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     private void ContadorJugadores()
     {
         playerCount = PhotonNetwork.PlayerList.Length;
@@ -79,6 +101,12 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
         
     }
 
+    /// <summary>
+    /// Se llama cada vez que entra un nuevo jugador a la sala.
+    /// Volvemos a calcular el numero de jugadores que hay en la sala. Y actulizamos y sincronizamos el tiempo desde el host para todos los jugadores, mediante las funciones RPC
+    /// </summary>
+    /// <param name="newPlayer">Nuevo jugador</param>
+    /// <author> David Martinez Garcia </author>
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         //Cada vez que alguien entra en la sala, llamamos a nuestro contador de jugadores para que establezca los valores
@@ -88,6 +116,11 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
             photonView.RPC("RPC_SendTimer", RpcTarget.Others, timerToStartGame);
     }
 
+    /// <summary>
+    /// Actualiza el tiempo de la cuenta atras, que posteriormente sera mandada a todos los jugadores para la sincronizacion
+    /// </summary>
+    /// <param name="timeActual"></param>
+    /// <author> David Martinez Garcia </author>
     [PunRPC]
     private void RPC_SendTimer(float timeActual)
     {
@@ -102,6 +135,12 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
         }
     }
 
+    /// <summary>
+    /// Se llama cuando un jugador deja la sala.
+    /// Lo que volvemos a hacer es contar los jugadores que hay para saber lo que debemos hacer con la cuenta atras.
+    /// </summary>
+    /// <param name="otherPlayer">El jugador que deja la sala</param>
+    /// <author> David Martinez Garcia </author>
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         //Como tambien queremos actualizar el tiempo en funcion de si un jugador deja la sala, supongamos que son menos de los necesarios para empezar, calculamos otra vez los jugadores
@@ -110,12 +149,19 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
 
 
 
-    // Update is called once per frame
+
     void Update()
     {
         EsperarJugadores();
     }
 
+
+    /// <summary>
+    /// Este metodo aplica el estado en el que se encuentra la sala.
+    /// Resetea en caso necesario y establece la cuenta atras en los display.
+    /// En caso de que la cuenta atras llegue a 0 llamara al metodo que se encarga de iniciar el juego
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     private void EsperarJugadores()
     {
         //En este metodo comprobamos que la sala este o no lista para empezar a contar hacia atras, o este llena y tengamos que empezar
@@ -148,9 +194,13 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
                 return;
             StartGame();
         }
-
     }
 
+
+    /// <summary>
+    /// Resetea la cuenta atras cuando es necesario.
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     private void ResetearCuentaAtras()
     {
         //Reseteamos la cuenta atras, basicamente es asignar los valores del principio
@@ -160,6 +210,10 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
         timerToStartGame = maxWaitTime;
     }
 
+    /// <summary>
+    /// Inicia el juego multijugador en caso de ser el host de la sala
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     private void StartGame()
     {
         isStartingGame = true;
@@ -169,15 +223,25 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(multiplayerSceneIndex);
     }
 
+    /// <summary>
+    /// Se activa cuando el jugador clicka para abandonar la sala en la que se encuentra.
+    /// Abandona la sala en la que esta.
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     public void AbandonarSalaClicked()
     {
         PhotonNetwork.LeaveRoom();
     }
 
+    /// <summary>
+    /// Se activa cuando el jugador deja la sala.
+    /// Carga la escena del menu principal.
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     public override void OnLeftRoom()
     {
         SceneManager.LoadScene(menuPrincipalSceneIndex);
     }
 
-
+    #endregion
 }

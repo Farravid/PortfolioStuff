@@ -5,9 +5,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Este script maneja el input field del menu principal del jugador, para despues asignarle el nombre a la tag del nombre del player
+/// Ademas, contiene una especie de DB que almacena el ultimo nombre que te has puesto de tal manera que cuando inicias el juego se te establce por defecto, con posibilidad de cambiarlo.
+/// Este script debe ir atacheado al elemento Input Field del nombre del jugador del menu principal.
+/// </summary>
+
 public class PlayerInputMultiplayer : MonoBehaviour
 {
+    //Input field del nombre del jugador
     [SerializeField] private InputField namePlayerInput = null;
+    //Boton de unirse a partida rapida
     [SerializeField] private Button unirsePartidaRapidaButton = null;
 
     private const string PlayerPrefsNameKey = "PlayerName";
@@ -17,6 +25,10 @@ public class PlayerInputMultiplayer : MonoBehaviour
         EstablecerNombreJugador();
     }
 
+    /// <summary>
+    /// Si existia ya el nombre del jugador en algun registro se establece este
+    /// </summary>
+    /// <author>David Martinez Garcia</author>
     private void EstablecerNombreJugador()
     {
         //Si nunca hemos establecido el nombre a nuestro player, no va a hacer nada y el nombre srea el predefinido
@@ -29,14 +41,22 @@ public class PlayerInputMultiplayer : MonoBehaviour
         PermitirInicioInputField(defaultName);
     }
 
-    //Este metodo va en el onchange del input field del nombre en modo dinamico
+    /// <summary>
+    /// Este metodo se coloca en el onchange del campo InputField.
+    /// Permite o no empezar el juego dependiendo si el nombre es null o no
+    /// </summary>
+    /// <param name="defaultName"></param>
     public void PermitirInicioInputField(string defaultName)
     {
         //Con esto estamos forzando al jugador a poner al menos un nombre para poder empezar a jugar
         unirsePartidaRapidaButton.interactable = !string.IsNullOrEmpty(defaultName);
     }
 
-    //Este metodo va cuando se le de al boton de inciar una partida
+    /// <summary>
+    /// Una vez se le da a inciar el juego, este metodo se encarga de guardar en la DB el nombre que ha elegido el jugador.
+    /// Este metodo se inicia cuando se pulsa el boton de partida rapida
+    /// </summary>
+    /// <author>David Martinez Garcia</author>
     public void SavePlayerNameWhenStartClicked()
     {
         string playerName = namePlayerInput.text;

@@ -873,6 +873,7 @@ GameObject:
   - component: {fileID: 4356149479734326346}
   - component: {fileID: 6462983364443028438}
   - component: {fileID: -2448987614410835691}
+  - component: {fileID: -9019823753568054397}
   m_Layer: 0
   m_Name: PlayerWaiting
   m_TagString: PlayerWaiting
@@ -986,6 +987,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nameTagText: {fileID: 7751527531757623502}
+--- !u!114 &-9019823753568054397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2252943528828866984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25ae854f46f78d24a8de8581feb75c29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jugadoresMax: 4
+  spawnSalaTransforms: []
 --- !u!1 &2632339826501971668
 GameObject:
   m_ObjectHideFlags: 0

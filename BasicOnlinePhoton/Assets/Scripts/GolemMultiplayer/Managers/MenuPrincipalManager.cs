@@ -1,13 +1,16 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
+/// <summary>
+/// Este script se encarga de manejar el menu principal online del juego, es decir,
+/// el movimiento entre salas, conexiones y desconxiones de los jugadores a la hora de buscar partida etc...
+/// </summary>
 
 public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 {
+    #region Variables
+    //Utilizamos para saber si el jugador esta conectado a los servidores de photon
     private bool isConnected = false;
 
     //Esto es por si lo sacas al mercado y vas metiendo actualizaciones, esto deberia ser updateado a otra version, ya que
@@ -20,16 +23,19 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     private const int MaxPlayerStop = 4;
 
     [Tooltip("Index de la escena de la sala de espera que cargara una vez le demos a buscar partida rapida")]
-    [SerializeField] private int indexEscenaSalaEspera; 
+    [SerializeField] private int indexEscenaSalaEspera;
+    #endregion
 
-
-
-
-
+    #region Init
     private void Awake() => PhotonNetwork.AutomaticallySyncScene = true;
+    #endregion
 
     #region UI Methods
 
+    /// <summary>
+    /// Metodo que establece las caracteristicas principales de nuestro modo de juego partida rapida.
+    /// Este metodo se activa una vez pulsas buscar partida rapida
+    /// </summary>
     public void InicioPartidaRapida()
     {
         isConnected = true;
@@ -51,6 +57,10 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     }
 
 
+    /// <summary>
+    /// Cancela la busqueda de partida rapida una vez esta buscando.
+    /// Este metodo se activa cuando le damos al boton de cancelar partida rapida una vez estamos buscando
+    /// </summary>
     public void CancelarBusquedaPartidaRapida()
     {
         PhotonNetwork.Disconnect();
@@ -63,6 +73,9 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 
     #region Callbacks Methods
 
+    /// <summary>
+    /// Este callback se llama cuando el cliente se conecta a los servidores maestros de photon.
+    /// </summary>
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to master");
@@ -73,50 +86,34 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
         }
     }
 
+    /// <summary>
+    /// Este callback se llama cuando el cliente se desconecta de los servidores de photon
+    /// </summary>
+    /// <param name="cause">Causa de la desconexion</param>
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.Log("Desconectado debido a " + cause);
     }
 
+    /// <summary>
+    /// Se llama cuando un jugador logra entrar en una sala con exito.
+    /// En nuesetro caso, si logra entrar con exito cargara la sala de espera de los jugadores
+    /// </summary>
     public override void OnJoinedRoom()
     {
-        Debug.Log("Client successfully joined a room");
-        int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-
-        if(playerCount != MinPlayersStart)
-        {
-            //Ajustar ui
-            Debug.Log("Client is waiting for an opponent");
-
-        }
-        else
-        {
-            Debug.Log("Listo para empezar");
-        }
         PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
     }
 
+    /// <summary>
+    /// Se llama cada vez que un jugador intenta acceder a una sala aleatoria y el resultado es un error.
+    /// Si el jugador falla al entrar a alguna sala porque no existe ninguna sala. Este mismo jugador, creara una sala con las opciones predeterminadas
+    /// </summary>
+    /// <param name="returnCode"></param>
+    /// <param name="message"></param>
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log("No clients are waiting for opponent, creating a new room");
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MaxPlayerStop });
-    }
-
-
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        //Debug.Log("Hola entro aqui");
-
-
-        /*if (PhotonNetwork.CurrentRoom.PlayerCount == MaxPlayerStop)
-        {
-            PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
-        }
-        else if (PhotonNetwork.CurrentRoom.PlayerCount >= MinPlayersStart && PhotonNetwork.CurrentRoom.PlayerCount < MaxPlayerStop)
-        {
-            PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
-        }*/
-        PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
     }
 
     #endregion

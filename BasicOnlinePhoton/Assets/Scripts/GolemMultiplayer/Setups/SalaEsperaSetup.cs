@@ -7,96 +7,76 @@ using Photon.Realtime;
 using System.IO;
 using Cinemachine;
 
+/// <summary>
+/// Este script establece la disposicion de los elementos de la sala de espera.
+/// Es decir, prepara la sala de espera
+/// </summary>
+
 public class SalaEsperaSetup : MonoBehaviourPunCallbacks
 {
-    [Tooltip("The prefab to use for representing the player")]
+    [Tooltip("Prefab usado para representar al playerParado")]
     public GameObject playerPrefabQuieto;
 
-    [Tooltip("The prefab to use for representing the name of the player")]
-    public GameObject playerTagPrefab;
-
-    public static GameObject playerTagInstance;
-
+    [Tooltip("Lista de transforms que sera donde spawnen nuestros personajes")]
     public List<Transform> spawnSalaTransforms;
 
+    //Numero de jugadores
     private int numeroJugadores;
 
-    public List<GameObject> jugadores;
-
+    //Instancia de cada player que hemos creado
     private GameObject instancePlayerParado;
 
     #region Callbacks Methods
 
     private void Start()
     {
-        //InstanciarNombreJugador();
         InstanciarJugadorParado();
     }
 
-   //private void InstanciarNombreJugador()
-    //{
-      //  playerTagInstance = (GameObject)PhotonNetwork.Instantiate(this.playerTagPrefab.name, Vector3.zero, Quaternion.identity, 0);
-    //}
 
-
-    /*private void Update()
-    {
-        ContarJugadores();
-    }
-
-    private void ContarJugadores()
-    {
-        numeroJugadores = PhotonNetwork.CurrentRoom.PlayerCount;
-        switch (numeroJugadores)
-        {
-            case 1:
-                jugadores[0].SetActive(true);
-                jugadores[1].SetActive(false);
-                jugadores[2].SetActive(false);
-                jugadores[3].SetActive(false);
-                break;
-            case 2:
-                jugadores[0].SetActive(true);
-                jugadores[1].SetActive(true);
-                jugadores[2].SetActive(false);
-                jugadores[3].SetActive(false);
-                break;
-            case 3:
-                jugadores[0].SetActive(true);
-                jugadores[1].SetActive(true);
-                jugadores[2].SetActive(true);
-                jugadores[3].SetActive(false);
-                break;
-            case 4:
-                jugadores[0].SetActive(true);
-                jugadores[1].SetActive(true);
-                jugadores[2].SetActive(true);
-                jugadores[3].SetActive(true);
-                break;
-        }
-    }*/
-
-    
-
-
-
-    private void InstanciarJugadorParado()
-    {
-        numeroJugadores = PhotonNetwork.CurrentRoom.PlayerCount;
-        Transform transformElegido = ElegirSpawnSalaEspera(numeroJugadores);
-        instancePlayerParado = (GameObject)PhotonNetwork.Instantiate(this.playerPrefabQuieto.name, transformElegido.position, transformElegido.rotation, 0);
-    }
-
-    private Transform ElegirSpawnSalaEspera(int numJugadores) {
-
-       return spawnSalaTransforms[numJugadores - 1];
-
-    }
-
+    /// <summary>
+    /// Metodo que se activa cuando un jugador deja la sala.
+    /// En nuestro caso lo que hacemos es mover a los jugadores de manera que si alguien se sale, todos los jugadores pasaran a lo posicion anterior.
+    /// </summary>
+    /// <param name="otherPlayer">El jugador que deja la sala</param>
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if(PhotonNetwork.CurrentRoom.PlayerCount > 0)
-            instancePlayerParado.transform.position = ElegirSpawnSalaEspera(PhotonNetwork.CurrentRoom.PlayerCount).position;
+        //1 4 6 7
+
+        //1 4   7 
+        
+
+        int contadorPosicionPlayer = 1;
+        Player[] playerList = PhotonNetwork.PlayerList;
+        if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
+        {
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (otherPlayer.ActorNumber < playerList[i].ActorNumber)
+                {
+                    //Mover jugador
+                    if (instancePlayerParado.GetPhotonView().IsMine)
+                    {
+                        instancePlayerParado.transform.position = ElegirSpawnSalaEspera(contadorPosicionPlayer).position;
+                        contadorPosicionPlayer++;
+                    }
+                }
+                else
+                {
+                    contadorPosicionPlayer++;
+                }
+            }
+        }else if(PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            instancePlayerParado.transform.position = ElegirSpawnSalaEspera(1).position;
+        }
+            
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log(newPlayer.ActorNumber);
+        
     }
 
 
@@ -104,6 +84,28 @@ public class SalaEsperaSetup : MonoBehaviourPunCallbacks
 
 
     #region Metodos privados
+
+    /// <summary>
+    /// Instancia un jugador parado por cada jugador que entra en la partida
+    /// </summary>
+    private void InstanciarJugadorParado()
+    {
+        numeroJugadores = PhotonNetwork.CurrentRoom.PlayerCount;
+        Transform transformElegido = ElegirSpawnSalaEspera(numeroJugadores);
+        instancePlayerParado = (GameObject)PhotonNetwork.Instantiate(this.playerPrefabQuieto.name, transformElegido.position, transformElegido.rotation, 0);
+    }
+
+    /// <summary>
+    /// Selecciona el spawn correspondiente a cada jugador.
+    /// </summary>
+    /// <param name="numJugadores">Numero de jugadores actuales</param>
+    /// <returns></returns>
+    private Transform ElegirSpawnSalaEspera(int numJugadores)
+    {
+
+        return spawnSalaTransforms[numJugadores - 1];
+
+    }
 
     #endregion
 }

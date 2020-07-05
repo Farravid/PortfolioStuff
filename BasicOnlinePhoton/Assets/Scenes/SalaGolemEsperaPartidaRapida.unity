@@ -1219,5 +1219,5 @@ MonoBehaviour:
   menuPrincipalSceneIndex: 0
   minPlayersToStart: 2
   cuentaAtrasText: {fileID: 2336218615745886558}
-  maxWaitTime: 20
+  maxWaitTime: 25
   maxFullRoomWaitTIme: 5

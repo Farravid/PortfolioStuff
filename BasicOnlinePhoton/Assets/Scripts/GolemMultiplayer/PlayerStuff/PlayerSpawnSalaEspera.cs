@@ -46,19 +46,6 @@ public class PlayerSpawnSalaEspera : MonoBehaviourPunCallbacks
     /// <author>David Martinez Garcia</author>
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-
-        //1 4 6
-        //- 4 6
-
-
-        //1 2 3 4 5 6
-        //1 2 - 4 5 6
-
-        //lista que se queda cuando se va
-        //1 2 4 5 6
-
-        // los que son mas altos que el que se ha ido es 4 5 6
-
         Player[] playerList = PhotonNetwork.PlayerList;
 
 
@@ -81,15 +68,12 @@ public class PlayerSpawnSalaEspera : MonoBehaviourPunCallbacks
                     //la posicion en este caso sera la 3 que sera mayor pq antes era 3 y ahora 4
                     if(PhotonNetwork.LocalPlayer.ActorNumber == playerList[posNumerosId].ActorNumber && photonView.IsMine)
                     {
-                        //Hemos movido el primer jugador ahora solo hace falta hacer una cadena con los demas
                         this.transform.position = ElegirSpawnSalaEspera(posNumerosId).position;
-                        //posNumerosId++;
                         break;
                     }
                 }
             }
 
-            //1 2 4 5 6
             for (int i = 0;i<playerList.Length; i++)
             {
                 if (i > posNumerosId){
@@ -100,34 +84,6 @@ public class PlayerSpawnSalaEspera : MonoBehaviourPunCallbacks
                 }
             }
         }
-
-
-
-        /*int contadorPosicionPlayer = 1;
-
-        Player[] playerList = PhotonNetwork.PlayerList;
-
-        int idSuperar = otherPlayer.ActorNumber;
-
-        if (PhotonNetwork.CurrentRoom.PlayerCount > 0)
-        {
-            for (int i = 0; i < playerList.Length; i++)
-            {
-                if (idSuperar < PhotonNetwork.LocalPlayer.ActorNumber)
-                {
-                    //Mover jugador
-                    if (photonView.IsMine)
-                    {
-                        this.transform.position = ElegirSpawnSalaEspera(contadorPosicionPlayer).position;
-                        contadorPosicionPlayer++;
-                    }
-                }
-                else
-                {
-                    contadorPosicionPlayer++;
-                }
-            }
-        }*/
     }
 
     #endregion

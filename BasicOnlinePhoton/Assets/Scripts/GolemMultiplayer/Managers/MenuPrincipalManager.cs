@@ -1,6 +1,8 @@
-﻿using Photon.Pun;
+﻿using System.Collections.Generic;
+using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Este script se encarga de manejar el menu principal online del juego, es decir,
@@ -12,8 +14,8 @@ using UnityEngine;
 public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 {
     #region Variables
-    //Utilizamos para saber si el jugador esta conectado a los servidores de photon
-    private bool isConnected = false;
+    //Utilizamos para saber si el jugador esta conectado a los servidores de photon y quiere buscar una partida rapida
+    private bool isConnectedPartidaRapida = false;
 
     //Esto es por si lo sacas al mercado y vas metiendo actualizaciones, esto deberia ser updateado a otra version, ya que
     //la gente que no tenga el mismo gameversion no podra conectarse y jugar
@@ -26,6 +28,24 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
 
     [Tooltip("Index de la escena de la sala de espera que cargara una vez le demos a buscar partida rapida")]
     [SerializeField] private int indexEscenaSalaEspera;
+
+    [Tooltip("Index de la escena de la sala privada que cargara una vez le demos a crear partida rapida")]
+    [SerializeField] private int indexEscenaSalaPrivada;
+
+
+    [Tooltip("Boton para unirse a una sala privada con la id de esa sala")]
+    [SerializeField] private Button botonUnirseSalaPrivada;
+    [Tooltip("Input field de la ID de la sala a la que el jugador quiere unirse")]
+    [SerializeField] private InputField inputFieldIDRoom;
+
+
+
+
+    //Variables para detectar que boton a pulsado y que acciones debemos de realizar
+    private bool isSalaPrivada = false;
+    private bool isUnirseSalaPrivada = false;
+
+
     #endregion
 
     #region Init
@@ -41,7 +61,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// /// <author> David Martinez Garcia </author>
     public void InicioPartidaRapida()
     {
-        isConnected = true;
+        isConnectedPartidaRapida = true;
 
         if (PhotonNetwork.IsConnected)
         {
@@ -55,6 +75,47 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
         }
     }
+    
+
+    public void CrearSalaPrivada()
+    {
+        isSalaPrivada = true;
+
+        if (PhotonNetwork.IsConnected)
+        {
+            CrearSala(false);
+        }
+        else
+        {
+            PhotonNetwork.GameVersion = GameVersion;
+            PhotonNetwork.ConnectUsingSettings();
+        }
+    }
+
+    public void UnirseSalaPrivada()
+    {
+        isUnirseSalaPrivada = true;
+
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.JoinRoom(inputFieldIDRoom.text);
+        }
+        else
+        {
+            PhotonNetwork.GameVersion = GameVersion;
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+    }
+
+    /// <summary>
+    /// Cambia el estado del boton para permitir o no si unirse a una sala privada en relacion al campo del idroom
+    /// </summary>
+    /// <param name="idRoom"> Value del input field del id de la sala</param>
+    public void PermitirUnirseSalaPrivada(string idRoom)
+    {
+        botonUnirseSalaPrivada.interactable = !string.IsNullOrEmpty(idRoom);
+    }
 
 
     /// <summary>
@@ -63,7 +124,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// Debe ir en el onclick del boton cancelar del menu principal
     /// </summary>
     /// /// <author> David Martinez Garcia </author>
-    public void CancelarBusquedaPartidaRapida()
+    public void CancelarOnline()
     {
         PhotonNetwork.Disconnect();
     }
@@ -83,10 +144,37 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connected to master");
 
-        if (isConnected)
+        if (isConnectedPartidaRapida)
         {
             PhotonNetwork.JoinRandomRoom();
         }
+
+        if (isSalaPrivada)
+        {
+            CrearSala(false);
+        }
+
+        if (isUnirseSalaPrivada)
+        {
+            PhotonNetwork.JoinRoom(inputFieldIDRoom.text);
+        }
+    }
+
+
+
+
+    /// <summary>
+    /// Se llama si el crear la sala ha dado lugar a un error. En este caso se volvera a llamar a crear sala para intentarlo de nuevo.
+    /// El desencadenante de este problema suele ser que el id de una sala es igual a la de otra, por lo tanto repitiendo el proceso conseguiremos nuestra sala
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        //Ajustar depende cual sea la sala que ha fallado, muy importante ajustar esto
+        if (isSalaPrivada)
+            CrearSala(false);
+        else if(isConnectedPartidaRapida)
+            CrearSala(true);
     }
 
     /// <summary>
@@ -96,6 +184,9 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// /// <author> David Martinez Garcia </author>
     public override void OnDisconnected(DisconnectCause cause)
     {
+        isConnectedPartidaRapida = false;
+        isSalaPrivada = false;
+        isUnirseSalaPrivada = false;
         Debug.Log("Desconectado debido a " + cause);
     }
 
@@ -106,7 +197,11 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// /// <author> David Martinez Garcia </author>
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
+        if(isConnectedPartidaRapida)
+            PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
+        else if(isSalaPrivada || isUnirseSalaPrivada)
+            PhotonNetwork.LoadLevel(indexEscenaSalaPrivada);
+
     }
 
     /// <summary>
@@ -119,7 +214,23 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log("No clients are waiting for opponent, creating a new room");
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MaxPlayerStop });
+        if (!isUnirseSalaPrivada)
+            CrearSala(true);
+    }
+
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Crea una sala de photon. Determina si sera visible en la lista de salas o no con el parametro
+    /// </summary>
+    /// <param name="visible">Determina si la sala sera visible o no</param>
+    private void CrearSala(bool visible)
+    {
+        int randomIdRoom = Random.Range(0, 10000);
+        PhotonNetwork.CreateRoom(randomIdRoom.ToString(), new RoomOptions { MaxPlayers = MaxPlayerStop, IsVisible = visible });
     }
 
     #endregion

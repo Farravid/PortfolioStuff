@@ -17,6 +17,8 @@ public class PlayerInputMultiplayer : MonoBehaviour
     [SerializeField] private InputField namePlayerInput = null;
     //Boton de unirse a partida rapida
     [SerializeField] private Button unirsePartidaRapidaButton = null;
+    [SerializeField] private Button crearSalaPrivadaButton = null;
+
 
     private const string PlayerPrefsNameKey = "PlayerName";
 
@@ -50,6 +52,7 @@ public class PlayerInputMultiplayer : MonoBehaviour
     {
         //Con esto estamos forzando al jugador a poner al menos un nombre para poder empezar a jugar
         unirsePartidaRapidaButton.interactable = !string.IsNullOrEmpty(defaultName);
+        crearSalaPrivadaButton.interactable = !string.IsNullOrEmpty(defaultName);
     }
 
     /// <summary>

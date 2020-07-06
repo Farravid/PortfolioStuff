@@ -752,6 +752,11 @@ PrefabInstance:
       propertyPath: cuentaAtrasText
       value: 
       objectReference: {fileID: 2336218615745886558}
+    - target: {fileID: 7129051430836638415, guid: 7aa171d4aa2b91c4ca49cb66f5ce8833,
+        type: 3}
+      propertyPath: multiplayerSceneIndex
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8567779153580464243, guid: 7aa171d4aa2b91c4ca49cb66f5ce8833,
         type: 3}
       propertyPath: m_Name

@@ -75,8 +75,13 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
         }
     }
-    
 
+    /// <summary>
+    /// Se conecta a los servidores de photon si no lo estaba ya y crear una sala con una id aleatroia que mas tarde utilizaremos para unirnos.
+    /// Este metodo se activa cuando pulsas en crear partida privada.
+    /// La room que creeamos no es accesible desde el boton de jugar partida rapida, por algo es privada
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     public void CrearSalaPrivada()
     {
         isSalaPrivada = true;
@@ -92,6 +97,11 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
         }
     }
 
+    /// <summary>
+    /// Se conecta a los servidores de photon si no lo estaba ya y se intenta unir a la sala que se escribe en el input field
+    /// Este metodo se activa cuando pulsas unirse a la sala privada.
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     public void UnirseSalaPrivada()
     {
         isUnirseSalaPrivada = true;
@@ -142,18 +152,19 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// /// <author> David Martinez Garcia </author>
     public override void OnConnectedToMaster()
     {
-        Debug.Log("Connected to master");
-
+        //Si se pulsa el boton de unirse a partida rapida
         if (isConnectedPartidaRapida)
         {
             PhotonNetwork.JoinRandomRoom();
         }
 
+        //Si se pulsa el boton de crear una sala privada
         if (isSalaPrivada)
         {
             CrearSala(false);
         }
 
+        //Si se pulsa el boton de unirse a una sala privada
         if (isUnirseSalaPrivada)
         {
             PhotonNetwork.JoinRoom(inputFieldIDRoom.text);
@@ -170,7 +181,8 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// <author> David Martinez Garcia </author>
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        //Ajustar depende cual sea la sala que ha fallado, muy importante ajustar esto
+        //Depende la sala que haya que crear si falla en la creacion, se creara visible o no visible a los usuarios
+
         if (isSalaPrivada)
             CrearSala(false);
         else if(isConnectedPartidaRapida)
@@ -184,6 +196,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// /// <author> David Martinez Garcia </author>
     public override void OnDisconnected(DisconnectCause cause)
     {
+        //Reseteamos los valores
         isConnectedPartidaRapida = false;
         isSalaPrivada = false;
         isUnirseSalaPrivada = false;
@@ -197,6 +210,7 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// /// <author> David Martinez Garcia </author>
     public override void OnJoinedRoom()
     {
+        //Elegimos cuales de las escenas cargar dependiendo el boton que hayamos pulsado
         if(isConnectedPartidaRapida)
             PhotonNetwork.LoadLevel(indexEscenaSalaEspera);
         else if(isSalaPrivada || isUnirseSalaPrivada)
@@ -213,7 +227,6 @@ public class MenuPrincipalManager : MonoBehaviourPunCallbacks
     /// /// <author> David Martinez Garcia </author>
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("No clients are waiting for opponent, creating a new room");
         if (!isUnirseSalaPrivada)
             CrearSala(true);
     }

@@ -57,7 +57,8 @@ public class PlayerInputMultiplayer : MonoBehaviour
 
     /// <summary>
     /// Una vez se le da a inciar el juego, este metodo se encarga de guardar en la DB el nombre que ha elegido el jugador.
-    /// Este metodo se inicia cuando se pulsa el boton de partida rapida
+    /// Este metodo se inicia cuando se pulsa cualquier boton y accede a una sala.
+    /// Este metodo debe estar en todos los onclick que den lugar a una nueva sala o a entrar en una sala
     /// </summary>
     /// <author>David Martinez Garcia</author>
     public void SavePlayerNameWhenStartClicked()

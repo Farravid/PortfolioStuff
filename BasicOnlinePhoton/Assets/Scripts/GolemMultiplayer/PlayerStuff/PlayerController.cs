@@ -1,10 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
-using System.IO;
-using System;
+using UnityEngine.UI;
+
+/// <summary>
+/// Controla el movimiento basico del jugador y su camara en el modo online.
+/// Ademas tambien controla el comportamiento del chat de cada jugador en el juego
+/// Este script debe ir atacheado al jugador que instanciemos en el juego inGame
+/// </summary>
+/// <author> David Martinez Garcia </author>
+
 
 public class PlayerController : MonoBehaviourPunCallbacks
 {
@@ -51,15 +55,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [Tooltip("Camera de cada jugador")]
     public GameObject playerCamera;
 
-    [SerializeField] private GameObject chatInGame;
+    private GameObject chatInGame;
 
 
 
 
     #endregion
 
+    #region Init
     private void Awake()
     {
+        //Esto lo hacemos para manejar que en el juego no haya mas de una instancia de este prefab.
         if (photonView.IsMine)
         {
             PlayerController.LocalPlayerInstance = this.gameObject;
@@ -108,6 +114,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         ControlarChatPhoton();
     }
 
+    #endregion
 
     #region PlayerMovementAndGravity
 
@@ -179,12 +186,19 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     #region Photon player
 
+    /// <summary>
+    /// Maneja el comportamiento del chat inGame, como aparece y desaparece
+    /// T para aparecer
+    /// Esc para desaparecer
+    /// </summary>
+    /// <author> David Martinez Garcia </author>
     private void ControlarChatPhoton()
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
             chatInGame.SetActive(true);
             _animator.SetFloat("velocidad", 0);
+            chatInGame.GetComponentInChildren<InputField>().ActivateInputField();
 
         }
         //MANEJAR EL ESCAPE ESTE TAMBIEN CON EL ESCAPE DEL MENU DE PAUSA

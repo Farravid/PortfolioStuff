@@ -1,9 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
-using System;
+
+/// <summary>
+/// Este script establece la disposicion de los elementos de la sala privada.
+/// Es decir, prepara la sala privada.
+/// Este script debe ir atacheado a un objeto en la escena de la sala privada
+/// Este objeto sera el que maneje el setup de la sala, ej: SalaPrivadaSetup como objeto
+/// </summary>
+/// <author>David Martinez Garcia</author>
+
 
 public class SalaPrivadaSetup : MonoBehaviourPunCallbacks
 {
@@ -16,9 +23,6 @@ public class SalaPrivadaSetup : MonoBehaviourPunCallbacks
 
     //Numero de jugadores
     private int numeroJugadores;
-
-    //Instancia de cada player que hemos creado
-    private GameObject instancePlayerParado;
 
     //Boton de comenzar partida
     [SerializeField]
@@ -34,7 +38,6 @@ public class SalaPrivadaSetup : MonoBehaviourPunCallbacks
 
 
     #endregion
-
 
     #region Metodos privados
 
@@ -61,7 +64,10 @@ public class SalaPrivadaSetup : MonoBehaviourPunCallbacks
         return spawnSalaTransforms[numJugadores - 1];
     }
 
-
+    /// <summary>
+    /// Segun si somos el host o no de la partida, tendremos disponible el boton de empezar la partida
+    /// </summary>
+    /// <author>David Martinez Garcia</author>
     private void SetButtonComenzar()
     {
         if (PhotonNetwork.IsMasterClient)

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Photon.Pun;
-using Photon.Realtime;
-using System.IO;
-using Cinemachine;
 
 /// <summary>
 /// Este script establece la disposicion de los elementos de la sala de espera.

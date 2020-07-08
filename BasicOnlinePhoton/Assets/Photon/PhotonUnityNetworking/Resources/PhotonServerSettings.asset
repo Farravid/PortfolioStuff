@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AppSettings:
     AppIdRealtime: 4b2d0f84-5d8f-4cc2-8a10-cbaf0ddcf88e
-    AppIdChat: 
+    AppIdChat: 4dfcc893-47d7-4384-8dee-bb9e71b650ca
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
@@ -39,6 +39,8 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - RPC_SendTimer
+  - SendChat
+  - RPC_SendText
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 0

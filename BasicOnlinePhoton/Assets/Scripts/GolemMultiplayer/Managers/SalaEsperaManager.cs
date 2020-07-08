@@ -165,7 +165,8 @@ public class SalaEsperaManager : MonoBehaviourPunCallbacks
     private void EsperarJugadores()
     {
         //En este metodo comprobamos que la sala este o no lista para empezar a contar hacia atras, o este llena y tengamos que empezar
-        if(playerCount <= 1)
+        //esto lo he cambiado donde antes estabna minplayers antes estaba 1
+        if(playerCount < minPlayersToStart)
             ResetearCuentaAtras();
         //Si algunos de nuestros dos booleans estan activos, es decir el minimo de la sala esta cubierto o esta llena la sala
         if (isReadyToStart)

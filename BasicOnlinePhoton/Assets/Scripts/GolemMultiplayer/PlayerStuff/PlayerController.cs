@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using System.IO;
+using System;
 
 public class PlayerController : MonoBehaviourPunCallbacks
 {
@@ -50,6 +51,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [Tooltip("Camera de cada jugador")]
     public GameObject playerCamera;
 
+    [SerializeField] private GameObject chatInGame;
+
 
 
 
@@ -71,6 +74,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //Cursor.lockState = CursorLockMode.Locked;
         _cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+
+        //Para las camaras del cinemamachine de cada uno, la verdad es la hostia
         if (photonView.IsMine)
         {
             Debug.Log("Nombre del jugador: "+photonView.Owner.NickName);
@@ -79,16 +84,30 @@ public class PlayerController : MonoBehaviourPunCallbacks
         else{
             playerCamera.SetActive(false);
         }
+
+        //Recogemos el chat
+        chatInGame = GameObject.Find("ChatManager");
+        chatInGame.SetActive(false);
+
     }
 
     void Update()
     {
+
         delta = Time.deltaTime;
         if (!photonView.IsMine && PhotonNetwork.IsConnected)
             return;
-        MagnitudInput();
-        SetGravityGround();
+
+
+        //Es decir solo permitiremos el movimiento cuando el chat no este activo
+        if (!chatInGame.activeInHierarchy)
+        {
+            MagnitudInput();
+            SetGravityGround();
+        }
+        ControlarChatPhoton();
     }
+
 
     #region PlayerMovementAndGravity
 
@@ -155,6 +174,25 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     }
 
+
+    #endregion
+
+    #region Photon player
+
+    private void ControlarChatPhoton()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            chatInGame.SetActive(true);
+            _animator.SetFloat("velocidad", 0);
+
+        }
+        //MANEJAR EL ESCAPE ESTE TAMBIEN CON EL ESCAPE DEL MENU DE PAUSA
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            chatInGame.SetActive(false);
+        }
+    }
 
     #endregion
 

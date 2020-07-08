@@ -20,6 +20,7 @@ public class SalaPrivadaManager : MonoBehaviourPunCallbacks
 
     [Tooltip("Tiempo despues de que el host de la sala le de a empezar partida antes de empezar")]
     [SerializeField] private float tiempoPrePartida;
+    private float tiempoReset;
     //Tiempo que en realidad queda para empezar la partida
     private float tiempoRestante;
 
@@ -40,6 +41,7 @@ public class SalaPrivadaManager : MonoBehaviourPunCallbacks
     private void Start() {
         idSalaText.text = "ID sala: " + PhotonNetwork.CurrentRoom.Name;
         tiempoRestante = tiempoPrePartida;
+        tiempoReset = tiempoPrePartida;
     }
 
     private void Update() {
@@ -74,6 +76,10 @@ public class SalaPrivadaManager : MonoBehaviourPunCallbacks
             string textSecondsCountDown = string.Format("{0:00}", tiempoRestante);
             infoSalaText.text = "La partida empezara en: " + textSecondsCountDown;
 
+            if (PhotonNetwork.IsMasterClient)
+                photonView.RPC("RPC_SendText", RpcTarget.Others, infoSalaText.text);
+
+
             if(tiempoRestante <= 0f)
             {
                 if (isGameStarted)
@@ -95,6 +101,16 @@ public class SalaPrivadaManager : MonoBehaviourPunCallbacks
             photonView.RPC("RPC_SendTimer", RpcTarget.Others, tiempoRestante);
     }
 
+    [PunRPC]
+    private void RPC_SendText(string textoInfo)
+    {
+        //RPC para sincronizar la cuenta atras a todos aquellos que hayan entrado despues de que la cuenta atras haya empezado a contar
+        infoSalaText.text = textoInfo;
+    }
+
+    
+
+
     /// <summary>
     /// Actualiza el tiempo de la cuenta atras, que posteriormente sera mandada a todos los jugadores para la sincronizacion
     /// </summary>
@@ -105,6 +121,19 @@ public class SalaPrivadaManager : MonoBehaviourPunCallbacks
     {
         //RPC para sincronizar la cuenta atras a todos aquellos que hayan entrado despues de que la cuenta atras haya empezado a contar
         tiempoRestante = timeActual;
+    }
+
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        //Reseteamos tiemers y text
+        if(PhotonNetwork.PlayerList.Length < 2)
+        {
+            tiempoPrePartida = tiempoReset;
+            tiempoRestante = tiempoReset;
+            isComenzarPulsado = false;
+            infoSalaText.text = "";
+        }
     }
 
 

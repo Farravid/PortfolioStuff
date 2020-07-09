@@ -111,13 +111,13 @@ public class SalaPrivadaManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         //Reseteamos tiemers y text
-        if (PhotonNetwork.PlayerList.Length < 2)
-        {
-            tiempoPrePartida = tiempoReset;
-            tiempoRestante = tiempoReset;
-            isComenzarPulsado = false;
-            infoSalaText.text = "";
-        }
+        tiempoPrePartida = tiempoReset;
+        tiempoRestante = tiempoReset;
+        isComenzarPulsado = false;
+        infoSalaText.text = "";
+        //Si somos el host, enviamos la informacion de este texto a los demas jugadores para que tambien se les actualice
+        if (PhotonNetwork.IsMasterClient)
+            photonView.RPC("RPC_SendText", RpcTarget.Others, infoSalaText.text);
     }
 
 

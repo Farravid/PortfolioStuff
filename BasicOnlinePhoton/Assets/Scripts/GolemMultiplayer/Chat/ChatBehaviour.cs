@@ -144,7 +144,10 @@ public class ChatBehaviour : MonoBehaviourPunCallbacks, IChatClientListener
     {
         for (int i = 0; i < senders.Length; i++)
         {
-            textoChat.text = textoChat.text + messages[i] + "\n";
+            if (string.IsNullOrEmpty(textoChat.text))
+                textoChat.text = textoChat.text + " "+messages[i];
+            else
+                textoChat.text = textoChat.text+"\n "+messages[i];
         }
     }
 

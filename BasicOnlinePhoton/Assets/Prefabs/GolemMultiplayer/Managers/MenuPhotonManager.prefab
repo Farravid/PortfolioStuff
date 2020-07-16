@@ -44,3 +44,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexEscenaSalaEspera: 1
+  indexEscenaSalaPrivada: 2
+  botonUnirseSalaPrivada: {fileID: 0}
+  inputFieldIDRoom: {fileID: 0}

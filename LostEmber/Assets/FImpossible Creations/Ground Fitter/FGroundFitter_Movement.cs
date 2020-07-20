@@ -265,13 +265,25 @@ namespace FIMSpace.GroundFitter
             if (ActiveSpeed > 0.15f)
             {
                 if (Sprint)
-                    CrossfadeTo("Run", 0.25f);
+                    CrossfadeTo("Run", 0.4f);
                 else
-                    CrossfadeTo("Walk", 0.25f);
+                    CrossfadeTo("Walk", 0.4f);
             }
             else
             {
                 CrossfadeTo("Idle", 0.25f);
+            }
+
+            //David
+            //Attack
+            if (Input.GetMouseButtonDown(0))
+            {
+                animator.SetTrigger("Attack");
+            }
+
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            {
+                ActiveSpeed = 0f;
             }
 
             // If object is in air we just slowing animation speed to zero
@@ -322,29 +334,6 @@ namespace FIMSpace.GroundFitter
                 holdJumpPosition.y = freezeJumpYPosition + fitter.UpOffset;
             }
 
-            //if (inAir)
-            //{
-            //    if (UsePhysics)
-            //        if (rigb)
-            //        {
-            //            RaycastHit hit;
-            //            //itsCollider.enabled = false;
-
-            //            if (Physics.BoxCast(itsCollider.bounds.center, itsCollider.bounds.extents * 0.6f, fitter.transform.forward, out hit, Quaternion.identity, itsCollider.bounds.max.magnitude * 0.01f, fitter.GroundLayerMask, QueryTriggerInteraction.Ignore))
-            //            {
-            //                //inAir = false;
-            //                //fitter.BackRaycast();
-            //                //fitter.enabled = true;
-
-            //                float pre = fitter.RaycastCheckRange;
-            //                fitter.RaycastCheckRange *= 100;
-            //                fitter.CastRay();
-            //                fitter.RaycastCheckRange = pre;
-            //            }
-            //            //itsCollider.enabled = true;
-            //        }
-            //}
-
             if (MoveVector != Vector3.zero)
             {
                 if (!UseRootMotionRotation)
@@ -371,15 +360,6 @@ namespace FIMSpace.GroundFitter
             }
 
             holdJumpPosition += lastVelocity * delta;
-            //if (!UsePositionRootMotion)
-            //{
-            //    holdJumpPosition += ((transform.forward * ActiveSpeed)) * delta;
-            //}
-            //else
-            //{
-            //    if (inAir)
-            //        holdJumpPosition += ((transform.forward * ActiveSpeed)) * delta;
-            //}
 
             transform.position = holdJumpPosition;
         }

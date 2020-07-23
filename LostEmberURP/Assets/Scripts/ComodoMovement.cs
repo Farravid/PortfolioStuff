@@ -1,4 +1,4 @@
-﻿using FIMSpace.FLook;
+﻿/*using FIMSpace.FLook;
 using FIMSpace.GroundFitter;
 using UnityEngine;
 
@@ -53,4 +53,4 @@ public class ComodoMovement : FGroundFitter_MovementLook
     {
         targetLookPos = tPos;
     }
-}
+}*/

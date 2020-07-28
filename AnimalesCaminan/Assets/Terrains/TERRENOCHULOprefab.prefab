@@ -41,7 +41,7 @@ Terrain:
   m_GameObject: {fileID: 7813409958820458193}
   m_Enabled: 1
   serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: 18b5871dcca1f9e45bc7b43ad90b1f4d, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: adc1cb130309e4f4fb70b1941b5d4a1c, type: 2}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
@@ -74,5 +74,5 @@ TerrainCollider:
   m_GameObject: {fileID: 7813409958820458193}
   m_Material: {fileID: 0}
   m_Enabled: 1
-  m_TerrainData: {fileID: 15600000, guid: 18b5871dcca1f9e45bc7b43ad90b1f4d, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: adc1cb130309e4f4fb70b1941b5d4a1c, type: 2}
   m_EnableTreeColliders: 1

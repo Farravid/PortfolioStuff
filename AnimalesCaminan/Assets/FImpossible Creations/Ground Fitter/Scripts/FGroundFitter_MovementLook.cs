@@ -21,6 +21,7 @@ namespace FIMSpace.GroundFitter
 
             if (MoveVector != Vector3.zero) SetLookAtPosition(transform.position + Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y + RotationOffset, 0f) * Vector3.forward * 10f);
 
+            /*
             if (targetOfLook)
             {
                 Vector3 pos = targetPos;
@@ -32,10 +33,10 @@ namespace FIMSpace.GroundFitter
                 {
                     targetOfLook.position = Vector3.Lerp(targetOfLook.position, pos, Mathf.Lerp(1f, 30f, FollowSpeed) * Time.deltaTime);
                 }
-            }
+            }*/
         }
 
-        private void SetLookAtPosition(Vector3 tPos)
+        protected virtual void SetLookAtPosition(Vector3 tPos)
         {
             if (!localOffset)
                 targetPos = tPos + Vector3.up;

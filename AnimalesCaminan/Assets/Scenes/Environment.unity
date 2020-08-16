@@ -269,15 +269,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799956349195796, guid: 34213037c20ca11429ac8a07b22026ab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.56
+      value: 16.49288
       objectReference: {fileID: 0}
     - target: {fileID: 4799956349195796, guid: 34213037c20ca11429ac8a07b22026ab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 19.99096
+      value: 20.336266
       objectReference: {fileID: 0}
     - target: {fileID: 4799956349195796, guid: 34213037c20ca11429ac8a07b22026ab, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 16.719439
+      value: 16.898113
       objectReference: {fileID: 0}
     - target: {fileID: 4799956349195796, guid: 34213037c20ca11429ac8a07b22026ab, type: 3}
       propertyPath: m_LocalRotation.x
@@ -417,6 +417,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TERRENOCHULOprefab
       objectReference: {fileID: 0}
+    - target: {fileID: 7813409958820458193, guid: 9a23201cad2e8ce42a5ce6b443cb502f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7813409958820458196, guid: 9a23201cad2e8ce42a5ce6b443cb502f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -505,7 +510,88 @@ MonoBehaviour:
   RootToParent: 0
   AutoGetWithOne: 1
   InitBeforeAnimator: 0
-  proceduralPoints: []
+  proceduralPoints:
+  - index: 0
+    Transform: {fileID: 863404086}
+    Position: {x: 16.49288, y: 20.543482, z: 708.37805}
+    Rotation: {x: 0.01855665, y: -0.70686334, z: -0.018556608, w: 0.7068631}
+    PreviousRotation: {x: 0.038887687, y: -0.7060368, z: -0.03888764, w: 0.70603657}
+    InitialRotation: {x: 0.038887687, y: -0.7060368, z: -0.03888764, w: 0.70603657}
+    InitialLossyScale: {x: 2.5400019, y: 2.540001, z: 2.5400023}
+    PreviousPosition: {x: 16.49288, y: 20.543482, z: 17.23432}
+    SpringOffset: {x: 0, y: 0, z: 0}
+    SpringOffset2: {x: 0, y: 0, z: 0}
+    LookDirection: {x: 1, y: 0.000002789068, z: -0.00000032022874}
+    InitLookDirection: {x: 1, y: 0.000002789068, z: -0.00000032022874}
+    CrossUp: {x: -0.84667975, y: 0.5288842, z: 0.05843752}
+    BoneLength: 0.13010137
+    InitBoneLength: 0.13010137
+    ScaleFactor: 1
+    Correction: {x: 0.000000049629033, y: 0.000000005025212, z: 0.9823932, w: 0.18682517}
+    InitialLocalPosition: {x: 0.0010551166, y: 0.0016895198, z: 5.111394e-10}
+    InitialLocalRotation: {x: 0.000000049629033, y: 0.000000005025212, z: 0.9823932,
+      w: 0.18682517}
+    LookBackDirection: {x: 0.000000099388124, y: -0.000000008670438, z: 1}
+    RotationTargetPos: {x: 16.49288, y: 20.543482, z: 17.23432}
+    PreCollisionPosition: {x: 16.49288, y: 20.543482, z: 708.37805}
+    PreCollisionRotation: {x: 0, y: 0, z: 0, w: 0}
+    ColliderRadius: 1
+    collisionOffsets: {x: 0, y: 0, z: 0}
+    collisionFlags: 0
+  - index: 1
+    Transform: {fileID: 1464054200}
+    Position: {x: 16.49288, y: 20.550806, z: 708.1505}
+    Rotation: {x: -0.0024039992, y: 0.7071029, z: 0.002400544, w: -0.7071025}
+    PreviousRotation: {x: 0.030627064, y: -0.70644337, z: -0.030627009, w: 0.7064431}
+    InitialRotation: {x: 0.030627064, y: -0.70644337, z: -0.030627009, w: 0.7064431}
+    InitialLossyScale: {x: 2.540001, y: 2.5399997, z: 2.5400023}
+    PreviousPosition: {x: 16.49288, y: 20.55777, z: 17.105005}
+    SpringOffset: {x: 0, y: 0, z: 0}
+    SpringOffset2: {x: 0, y: 0, z: 0}
+    LookDirection: {x: 1, y: 0.0000019838517, z: -0.00000045015219}
+    InitLookDirection: {x: 1, y: 0.0000019838517, z: -0.00000045015219}
+    CrossUp: {x: 0.0000027370281, y: -0.99395096, z: -0.10982445}
+    BoneLength: 0.13010137
+    InitBoneLength: 0.13010137
+    ScaleFactor: 0.9999999
+    Correction: {x: 0.0000000126003465, y: -0.000000062259595, z: 0.011696237, w: 0.99993163}
+    InitialLocalPosition: {x: -0.05122052, y: 0, z: 1.1368684e-15}
+    InitialLocalRotation: {x: 0.0000000126003465, y: -0.000000062259595, z: 0.011696237,
+      w: 0.99993163}
+    LookBackDirection: {x: -0.00000012421593, y: -0.000000026655377, z: 1}
+    RotationTargetPos: {x: 16.49288, y: 20.551323, z: 708.04877}
+    PreCollisionPosition: {x: 16.49288, y: 20.550308, z: 708.2481}
+    PreCollisionRotation: {x: 0, y: 0, z: 0, w: 0}
+    ColliderRadius: 1
+    collisionOffsets: {x: 0, y: 0, z: 0}
+    collisionFlags: 0
+  - index: 2
+    Transform: {fileID: 1114250443}
+    Position: {x: 16.49288, y: 20.552303, z: 707.9228}
+    Rotation: {x: -0.01931858, y: 0.7068431, z: 0.019313697, w: -0.70684284}
+    PreviousRotation: {x: 0.047322787, y: -0.70552176, z: -0.0473227, w: 0.7055214}
+    InitialRotation: {x: 0.047322787, y: -0.70552176, z: -0.0473227, w: 0.7055214}
+    InitialLossyScale: {x: 2.5400016, y: 2.5400004, z: 2.5400023}
+    PreviousPosition: {x: 16.49288, y: 20.569029, z: 16.975395}
+    SpringOffset: {x: 0, y: 0, z: 0}
+    SpringOffset2: {x: 0, y: 0, z: 0}
+    LookDirection: {x: 0, y: 0, z: 0}
+    InitLookDirection: {x: 0, y: 0, z: 0}
+    CrossUp: {x: 0.0000019224135, y: -0.99395096, z: -0.10982445}
+    BoneLength: 0.13010137
+    InitBoneLength: 0.13010137
+    ScaleFactor: 0.9999999
+    Correction: {x: 0.000000009941899, y: -2.0254178e-10, z: -0.023645593, w: 0.99972045}
+    InitialLocalPosition: {x: -0.05122049, y: -0.000000009536743, z: 2.2737367e-15}
+    InitialLocalRotation: {x: 0.000000009941899, y: -2.0254178e-10, z: -0.023645593,
+      w: 0.99972045}
+    LookBackDirection: {x: -8.751345e-10, y: -0.000000019868661, z: 1}
+    RotationTargetPos: {x: 16.49288, y: 20.552942, z: 707.82104}
+    PreCollisionPosition: {x: 16.49288, y: 20.55169, z: 708.0204}
+    PreCollisionRotation: {x: 0, y: 0, z: 0, w: 0}
+    ColliderRadius: 1
+    collisionOffsets: {x: 0, y: 0, z: 0}
+    collisionFlags: 0
   localProceduralPoints: []
   PositionSpeed: 35
   RotationSpeed: 20
@@ -521,14 +607,14 @@ MonoBehaviour:
   UseAutoCorrectLookAxis: 1
   FullCorrection: 1
   LookUpMethod: 0
-  OrientationReference: {fileID: 0}
+  OrientationReference: {fileID: 863404086}
   AnimateCorrections: 0
   AnimateRoot: 1
   LengthMultiplier: 1
-  AxisCorrection: {x: 0, y: 0, z: 1}
+  AxisCorrection: {x: 1, y: 0.000002789068, z: -0.00000032022874}
   AxisLookBack: {x: 0, y: 1, z: 0}
-  ExtraCorrectionOptions: 0
-  ExtraFromDirection: {x: 0, y: 0, z: 1}
+  ExtraCorrectionOptions: 1
+  ExtraFromDirection: {x: 1, y: 0.000002789068, z: -0.00000032022874}
   ExtraToDirection: {x: 0, y: 0, z: 1}
   AddTailReferences: 0
   UpdateClock: 1
@@ -584,27 +670,27 @@ MonoBehaviour:
   OptimizeWithMesh: {fileID: 0}
   RootPoint:
     index: -1
-    Transform: {fileID: 0}
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 1}
-    PreviousRotation: {x: 0, y: 0, z: 0, w: 1}
-    InitialRotation: {x: 0, y: 0, z: 0, w: 1}
-    InitialLossyScale: {x: 1, y: 1, z: 1}
-    PreviousPosition: {x: 0, y: 0, z: 0}
+    Transform: {fileID: 953603593}
+    Position: {x: 16.49288, y: 20.548326, z: 17.235779}
+    Rotation: {x: 0.7008709, y: -0.093702435, z: -0.7008707, w: 0.093702435}
+    PreviousRotation: {x: 0.7008709, y: -0.093702435, z: -0.7008707, w: 0.093702435}
+    InitialRotation: {x: 0.7008709, y: -0.093702435, z: -0.7008707, w: 0.093702435}
+    InitialLossyScale: {x: 2.5399997, y: 2.5399997, z: 2.54}
+    PreviousPosition: {x: 16.49288, y: 20.548326, z: 17.235779}
     SpringOffset: {x: 0, y: 0, z: 0}
     SpringOffset2: {x: 0, y: 0, z: 0}
-    LookDirection: {x: 0, y: 0, z: 0}
-    InitLookDirection: {x: 0, y: 0, z: 0}
-    CrossUp: {x: 0, y: 1, z: 0}
-    BoneLength: 0
-    InitBoneLength: 0
+    LookDirection: {x: -0.52978957, y: -0.84812915, z: -0.0000000928214}
+    InitLookDirection: {x: -0.52978957, y: -0.84812915, z: -0.0000000928214}
+    CrossUp: {x: -1, y: -0.0000001391361, z: -0.00000047332756}
+    BoneLength: 0.0050596264
+    InitBoneLength: 0.0050596264
     ScaleFactor: 1
     Correction: {x: 0, y: 0, z: 0, w: 1}
-    InitialLocalPosition: {x: 0, y: 0, z: 0}
-    InitialLocalRotation: {x: 0, y: 0, z: 0, w: 1}
-    LookBackDirection: {x: 0, y: 0, z: 0}
-    RotationTargetPos: {x: 0, y: 0, z: 0}
-    PreCollisionPosition: {x: 0, y: 0, z: 0}
+    InitialLocalPosition: {x: 0.000000029915, y: 0.21206033, z: -0.062336806}
+    InitialLocalRotation: {x: 0.7008709, y: -0.093702435, z: -0.7008707, w: 0.093702435}
+    LookBackDirection: {x: -1, y: -0.000000029802322, z: -0.00000022724271}
+    RotationTargetPos: {x: 16.49288, y: 20.548326, z: 17.235779}
+    PreCollisionPosition: {x: 16.49288, y: 20.548326, z: 17.235779}
     PreCollisionRotation: {x: 0, y: 0, z: 0, w: 0}
     ColliderRadius: 1
     collisionOffsets: {x: 0, y: 0, z: 0}
@@ -613,12 +699,12 @@ MonoBehaviour:
   initializationBone2: {fileID: 0}
   CollisionLookBack: 1
   drawGizmos: 0
-  UseWaving: 0
+  UseWaving: 1
   CosinusAdd: 0
-  WavingSpeed: 3
-  WavingRange: 0.8
-  WavingAxis: {x: 1, y: 0, z: 0}
-  TailRotationOffset: {x: 0, y: 0, z: 0}
+  WavingSpeed: 2
+  WavingRange: 0.3
+  WavingAxis: {x: 0, y: 0, z: 1}
+  TailRotationOffset: {x: 0, y: 0, z: 10}
   WavingType: 0
   AlternateWave: 1
   DisconnectTransforms: 0
@@ -640,9 +726,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8cd295c7479cdd49960763256968cfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  velocidadTucan: 10
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!4 &895280175 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4799956349195796, guid: 34213037c20ca11429ac8a07b22026ab,
+    type: 3}
+  m_PrefabInstance: {fileID: 122623442}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &953603593 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4404233877270996, guid: 34213037c20ca11429ac8a07b22026ab,
     type: 3}
   m_PrefabInstance: {fileID: 122623442}
   m_PrefabAsset: {fileID: 0}
@@ -1045,6 +1141,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5251938928478853822, guid: 849b96f9cbac7ca4eb8d897ba7e7f7e4,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 849b96f9cbac7ca4eb8d897ba7e7f7e4, type: 3}
 --- !u!1 &1408457853
@@ -1406,7 +1507,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1901773412}
   m_LocalRotation: {x: 0.20514476, y: 0.000000031719082, z: -0.000000006648405, w: 0.97873163}
-  m_LocalPosition: {x: 16.56, y: 21.49096, z: 14.519439}
+  m_LocalPosition: {x: 16.49288, y: 21.836266, z: 14.698113}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

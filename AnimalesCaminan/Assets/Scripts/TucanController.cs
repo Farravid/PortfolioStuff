@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class TucanController : MonoBehaviour
 {
@@ -8,51 +9,52 @@ public class TucanController : MonoBehaviour
 
     [SerializeField]
     private float velocidadTucan;
+    [SerializeField]
+    private float smoothResetRotation;
 
     private Vector3 m_CurrentRotation;
     private bool m_AbleToGoesDown;
     private bool m_AbleToGoesStraight;
 
     [SerializeField]
-    private LayerMask groundMask;
+    private LayerMask limiteTucanLayer;
 
     private void Update()
     {
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
 
-        //-70 maximo 42 minimo x axis
+        //Debug.Log(transform.forward.y);
 
+        Debug.Log(velocidadTucan);
         transform.position += transform.forward * Time.deltaTime * velocidadTucan;
 
+        VelocidadHuracan();
         SetTucanRotation();
-        DistanceEnvironment();
+        DistanceGround();
 
 
     }
 
-    private void DistanceEnvironment()
+    private void VelocidadHuracan()
+    {
+        //if(Time.time %2 == 0)
+        velocidadTucan -= transform.forward.y * velocidadTucan * Time.deltaTime;
+        if (velocidadTucan > 20f)
+            velocidadTucan = 20f;
+        if (m_CurrentRotation.x < 0f && velocidadTucan < 1f)
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(new Vector3(50f, transform.localRotation.eulerAngles.y, transform.localRotation.eulerAngles.z)), smoothResetRotation * Time.deltaTime);
+    }
+
+    private void DistanceGround()
     {
         //Raycast hacia el suelo
         Ray rayDown = new Ray(transform.position, Vector3.down);
         RaycastHit raycastHitDown;
-        if (Physics.Raycast(rayDown, out raycastHitDown, 10f, groundMask))
+        if (Physics.Raycast(rayDown, out raycastHitDown, 10f, limiteTucanLayer))
             m_AbleToGoesDown = false;
         else
             m_AbleToGoesDown = true;
-
-        Debug.Log("Can Down: "+m_AbleToGoesDown);
-
-        //Raycast hacia delante
-        Ray rayForward = new Ray(transform.position, Vector3.forward);
-        RaycastHit raycastHitForward;
-        if (Physics.Raycast(rayForward, out raycastHitForward, 15f, groundMask))
-            m_AbleToGoesStraight = false;
-        else
-            m_AbleToGoesStraight = true;
-
-        Debug.Log("Can Straight: "+m_AbleToGoesStraight);
-
     }
 
     private void SetTucanRotation()
@@ -73,18 +75,17 @@ public class TucanController : MonoBehaviour
             m_CurrentRotation.z = 45f;
 
 
-        if(m_AbleToGoesDown && m_AbleToGoesStraight)
+        if (m_AbleToGoesDown)
         {
             transform.localRotation = Quaternion.Euler(m_CurrentRotation);
-            transform.Rotate(inputVertical + Mathf.Abs(inputHorizontal), 0f, -1f * inputHorizontal);
-        }else if (!m_AbleToGoesDown)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(new Vector3(-10f, transform.rotation.y, 0f)), 5f * Time.deltaTime);
-        }else if (!m_AbleToGoesStraight)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(new Vector3(-70f, transform.rotation.y, 0f)), 5f * Time.deltaTime);
+            if(inputHorizontal != 0)
+                transform.Rotate(inputVertical, inputHorizontal/3f, -1f * inputHorizontal);
+            else
+                transform.Rotate(inputVertical, 0f, -1f * inputHorizontal);
         }
-
-
+        else if (!m_AbleToGoesDown)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(new Vector3(-10f, transform.localRotation.eulerAngles.y, 0f)), smoothResetRotation * Time.deltaTime);
+        }
     }
 }

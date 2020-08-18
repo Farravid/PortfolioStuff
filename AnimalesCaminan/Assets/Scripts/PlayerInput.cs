@@ -38,7 +38,7 @@ public class PlayerInput : MonoBehaviour
     {
         m_Movimiento.Set(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         m_Jump = Input.GetKeyDown(KeyCode.Space);
-        m_Run = Input.GetKeyDown(KeyCode.LeftShift);
+        m_Run = Input.GetKey(KeyCode.LeftShift);
     }
 
 

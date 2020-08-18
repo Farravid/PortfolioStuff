@@ -58,13 +58,20 @@ public class PlayerController : MonoBehaviour
     private void AdicionalMovements()
     {
         Run();
+        Roll();
+    }
+
+    private void Roll()
+    {
+        if (Input.GetMouseButtonDown(1) && IsMoveInput && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("LocomotionMoving") && !m_Animator.IsInTransition(0))
+            m_Animator.SetTrigger("Roll");
     }
 
     private void Run()
     {
-        if (m_PlayerInput.RunInput && maxSpeed == 3f)
+        if (m_PlayerInput.RunInput)
             maxSpeed = 6f;
-        else if (m_PlayerInput.RunInput && maxSpeed == 6f)
+        else if (!m_PlayerInput.RunInput)
             maxSpeed = 3f;
     }
 
@@ -81,9 +88,9 @@ public class PlayerController : MonoBehaviour
             m_PlayerInput.MoveInput.Normalize();
 
         if (IsMoveInput)
-            m_CurrentSpeed = Mathf.SmoothStep(m_CurrentSpeed, maxSpeed, 12f * Time.deltaTime);
+            m_CurrentSpeed = Mathf.SmoothStep(m_CurrentSpeed, maxSpeed, 10f * Time.deltaTime);
         else
-            m_CurrentSpeed = Mathf.SmoothStep(m_CurrentSpeed, 0f, 12f * Time.deltaTime);
+            m_CurrentSpeed = Mathf.SmoothStep(m_CurrentSpeed, 0f, 10f * Time.deltaTime);
     }
 
     private void SetGravityAndGround()
@@ -127,8 +134,11 @@ public class PlayerController : MonoBehaviour
         if (!IsMoveInput)
             m_AnglesDifToTurn = 0f;
 
-        if(Mathf.Abs(m_AnglesDifToTurn) < 120 && rotationAllowed)
+        if (rotationAllowed && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("LocomotionMoving") && !m_Animator.IsInTransition(0))
+        {
             transform.rotation = Quaternion.Slerp(transform.rotation, (Quaternion.LookRotation(m_DesiredMovement)), 5f * Time.deltaTime);
+            Debug.Log("A rotar hijo de puta");
+        }
 
     }
 
